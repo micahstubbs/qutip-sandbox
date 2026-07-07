@@ -22,6 +22,14 @@ Updated 2026-07-07.
 All model equations (Eqs. 1, 6-13, 30-33) and the Appendix-A geometry are
 implemented in `src/microtubule_qif/` and covered by `tests/test_model_measures.py`.
 
+**Interactive walkthrough.** `docs/paper-2602.02868/ui/` is a self-contained
+D3 + Three.js single-page app with one interactive view per step: a 3D WebGL
+geometry (Trp sites + dipole arrows, dimer/spiral toggle), Δ/G heatmaps, the
+bright/dark spectrum, the dynamics with a play/scrub timeline driving four
+synchronized charts, the embedding sweep, the trace-distance backflow, and the
+lifetime scaling. Data is exported by `scripts/export_viz_data.py`; run with any
+static server (see `ui/README.md`).
+
 ## Key implementation note (numerical stability)
 
 The eigenmode analysis uses the **excitonic eigenstates** — eigenvectors of the
