@@ -231,7 +231,7 @@ def bright_dark_series(net: md.Network, states) -> tuple:
     fractions of the *surviving* excitation carried by each sector, and the
     crossover is the first sample where the dark weight overtakes the bright.
     """
-    decay, _, evecs = net.eigenmodes()
+    _, decay, evecs = net.eigenmodes()
     inv = np.linalg.inv(evecs)
     bright_mask = decay / net.gamma > 1.0
     bright, dark = [], []
