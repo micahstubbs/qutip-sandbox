@@ -71,15 +71,30 @@ def main() -> int:
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--report", default=None,
                     help="markdown report path (default docs/notebook-run-results-<set>.md)")
+    ap.add_argument("--retry", action="store_true",
+                    help="rerun only the non-pass notebooks from the existing "
+                         "results JSONL and merge the outcomes")
     args = ap.parse_args()
 
     notebooks = discover(args.nb_set)
+    prior = {}
+    if args.retry:
+        prior_path = RUNS_DIR / f"results-{args.nb_set}.jsonl"
+        with open(prior_path) as pf:
+            for line in pf:
+                rec = json.loads(line)
+                prior[rec["notebook"]] = rec
+        notebooks = [p for p in notebooks
+                     if prior.get(str(p.resolve().relative_to(TUTORIALS)),
+                                  {}).get("status") != "pass"]
+        print(f"Retry mode: {len(notebooks)} previously non-passing notebooks")
     if not notebooks:
         print(f"No notebooks found for set {args.nb_set}", file=sys.stderr)
         return 1
 
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
-    jsonl_path = RUNS_DIR / f"results-{args.nb_set}.jsonl"
+    suffix = "-retry" if args.retry else ""
+    jsonl_path = RUNS_DIR / f"results-{args.nb_set}{suffix}.jsonl"
     report_path = Path(args.report) if args.report else (
         ROOT / "docs" / f"notebook-run-results-{args.nb_set}.md"
     )
@@ -103,6 +118,15 @@ def main() -> int:
             jf.flush()
             print(f"[{i}/{len(notebooks)}] {res['status'].upper():7s} "
                   f"{res['notebook']} ({res['seconds']}s)")
+
+    if args.retry:
+        merged = dict(prior)
+        for r in results:
+            merged[r["notebook"]] = r
+        results = list(merged.values())
+        with open(RUNS_DIR / f"results-{args.nb_set}.jsonl", "w") as mf:
+            for r in sorted(results, key=lambda r: r["notebook"]):
+                mf.write(json.dumps(r) + "\n")
 
     results.sort(key=lambda r: r["notebook"])
     n_pass = sum(r["status"] == "pass" for r in results)
