@@ -97,3 +97,32 @@ pulling result files (scp) rather than keeping a live local watcher.
 **Prevention**: For "wait until remote job done", poll on re-invocation or block
 a single foreground ssh with a remote until-loop, instead of a local background
 watcher that will be killed.
+
+## 2026-07-07T14:16 - Reproduction gaps need source search plus tracked fallbacks
+
+**Problem**: The microtubule QIF paper implementation could reproduce the
+published equations and ordered 1JFF workflow, but several figure-level inputs
+were absent: author simulation notebooks, Patwa geometry code, MD snapshots,
+AMBER setup files, disorder seeds, numerical figure data, and large-system
+solver details.
+
+**Root Cause**: The arXiv source package contains the manuscript and rendered
+figures, not the full computational provenance. General web search and GitHub
+CLI search can establish that no public repository is obvious, but that still
+leaves two valid paths: ask the authors for exact artifacts or build clearly
+labeled independent estimates.
+
+**Lesson**: For computational-paper reproductions, treat missing provenance as
+tracked work rather than a narrative footnote. Record the exact public-source
+and `gh search` queries, then create one issue per missing artifact with both an
+author-request checklist and an estimation fallback.
+
+**Solution**: Documented the search log in
+`docs/paper-2602.02868/reproduction-gap-report.md`, created linked Beads and
+GitHub issues for each missing artifact, and stored the GitHub URL in each
+Beads issue `external_ref`.
+
+**Prevention**: When implementing a paper, create the reproduction-gap report
+as soon as a required input is unavailable. Do not wait until the end of the
+implementation, because missing datasets, seeds, and solver choices affect both
+tests and user-facing claims.

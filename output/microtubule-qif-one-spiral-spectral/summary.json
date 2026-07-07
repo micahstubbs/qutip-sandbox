@@ -1,0 +1,25 @@
+{
+  "paper": "arXiv:2602.02868v1",
+  "assembly": "one-spiral",
+  "n_sites": 104,
+  "gamma_cm": 0.00273,
+  "gamma_rad_per_ps": 0.0005142368778753169,
+  "la_angle_deg": 46.2,
+  "static_disorder_cm": 0.0,
+  "structural_jitter_nm": 0.0,
+  "dipole_jitter_deg": 0.0,
+  "samples": 180,
+  "mode_summary": {
+    "gamma_cm": 0.00273,
+    "brightest_decay_over_gamma": 16.34461840383239,
+    "darkest_decay_over_gamma": 8.385433932261206e-05,
+    "brightest_lifetime_ps": 118.97672113039195,
+    "darkest_lifetime_ps": 23190560.220549632
+  },
+  "outputs": {
+    "sites": "output/microtubule-qif-one-spiral-spectral/sites.csv",
+    "matrices": "output/microtubule-qif-one-spiral-spectral/matrices.npz",
+    "modes": "output/microtubule-qif-one-spiral-spectral/modes.csv",
+    "spectrum": "output/microtubule-qif-one-spiral-spectral/spectrum.png"
+  }
+}
