@@ -1,0 +1,1594 @@
+### Quantum Information Flow in Microtubule Tryptophan Networks
+
+Lea Gassab
+
+lgassab@uwaterloo.ca
+
+Departments of Biology, Chemistry, Physics & Astronomy, Waterloo Institute for Nanotechnology, University of Waterloo, Waterloo, ON, Canada
+
+Onur Pusuluk
+
+Faculty of Engineering and Natural Sciences, Kadir Has University, 34083, Fatih, Istanbul, Türkiye
+
+Travis J.A. Craddock
+
+travis.craddock@uwaterloo.ca
+
+Departments of Biology, Physics & Astronomy, Waterloo Institute for Nanotechnology, University of Waterloo, Waterloo, ON, Canada
+
+### Abstract
+
+Networks of aromatic amino acid residues within microtubules, particularly those formed by tryptophan, may serve as pathways for optical information flow. Ultraviolet excitation dynamics in these networks are typically modeled with effective non-Hermitian Hamiltonians. By extending this approach to a Lindblad master equation that incorporates explicit site geometries and dipole orientations, we track how correlations are generated, routed, and dissipated, while capturing both energy dissipation and information propagation among coupled chromophores. We compare localized injections, fully delocalized preparations, and eigenmode-based initial states. To quantify the emerging quantum-informational structure, we evaluate the L_{1} norm of coherence, the correlated coherence, and the logarithmic negativity within and between selected chromophore sub-networks. The results reveal a strong dependence of both the direction and persistence of information flow on the type of initial preparation. Superradiant components drive the rapid export of correlations to the environment, whereas subradiant components retain them and slow their leakage. Embedding single tubulin units into larger dimers and spirals reshapes pairwise correlation maps and enables site-selective routing. Scaling to larger ordered lattices strengthens both export and retention channels, whereas static energetic and structural disorder suppresses long-range transport and reduces overall correlation transfer. These findings provide a Lindbladian picture of information flow in cytoskeletal chromophore networks and identify structural and dynamical conditions that transiently preserve nonclassical correlations in microtubules.
+
+quantum biology; open quantum systems; non-Markovianity; spectral density; cooperative emission; excitonic transport; non-Hermitian dynamics; superradiance; subradiance
+
+### 
+I Introduction
+
+Neural systems display rhythmic synchronization and structured correlations that are often interpreted as signatures of directed information flow [1, 2, 3, 4]. The neuronal microtubule cytoskeleton, an intracellular network of protein polymers, has been proposed to play a significant role beyond mere structural support and axonal transport, acting as a potential substrate for propagating and processing information within the neuron. In contrast to the rapid turnover observed in many dividing cells, neuronal microtubules contain a substantial stable fraction as well as long-lived polymer domains. Experimentally, stable microtubule populations in neurons can persist for hours, coexisting with more labile populations that remodel on much shorter timescales [5, 6]. This relative stability is crucial for maintaining neuronal morphology and supporting long-distance transport, and it motivates exploring whether microtubule-embedded molecular networks could support structured correlation routing. Motivated by a general perspective on correlation and information routing, we turn to molecular networks in microtubules where optical interactions can be quantified with microscopic detail.
+
+Microtubules contain dense arrays of aromatic amino acids, with tryptophan providing strong ultraviolet absorption and large transition dipoles that support collective optical effects. Recent experiments using tryptophan autofluorescence lifetimes have already demonstrated electronic energy migration over several nanometers along microtubules [7]. Complementary experimental and theoretical work reports ultraviolet superradiance in biological assemblies with extended tryptophan networks, suggesting that ordered cytoskeletal structures can sustain cooperative emission [8, 9, 10, 11]. For microtubules specifically, analyses based on effective non-Hermitian Hamiltonians predict superradiant and subradiant excitonic eigenstates that arise from radiative coupling to the electromagnetic field [12, 13, 14, 15, 16, 17]. These observations raise time-resolved questions with biological relevance. How are correlations generated and redistributed among chromophores on picosecond–nanosecond timescales, how rapidly are they exported radiatively, and how do structure, size, and disorder shape the balance between internal redistribution and emission?
+
+Beyond these radiative and optical considerations, several studies have already treated microtubules as quantum information channels. Shirmovsky and collaborators modeled single–excitation migration along microtubule tryptophan chains and showed that the propagation speed of the excited state and the associated entanglement transfer can lie in the range of axonal conduction velocities, suggesting that tryptophan networks may mediate quantum‐assisted signaling [18, 19, 20]. Related work on the quantum relaxation of tubulin dipole networks quantified decoherence times under dissipative dynamics and explored Markovian versus non-Markovian regimes in microtubules [21, 22, 23]. Other approaches include waveguide QED models in which tryptophans and surrounding water act as qubits coupled to guided modes in microtubules [24], and proposals that employ error-correcting surface codes or mitotic spindle entanglement to link microtubules with objective reduction–type mechanisms [25, 26]. In contrast to these tunneling- and spin-based schemes, the present work focuses on radiative coupling to the electromagnetic field, larger ordered tryptophan assemblies, and a systematic comparison of distinct initial states to assess how microtubule geometry and disorder shape correlation generation, redistribution, and loss.
+
+A more physically consistent open-system approach may provide a natural framework for addressing these questions. Accordingly, instead of using a non-Hermitian effective Hamiltonian, we describe radiative loss with a Markovian Lindblad master equation, so the dynamics remain completely positive while retaining the usual decay channel [27, 28, 29, 30, 31, 32, 33, 34, 36, 35]. Within this framework, we model networks of tryptophan chromophores using site-specific positions and dipole orientations, and we track information flow by following population redistribution along with correlation-oriented metrics. In particular, we quantify the information carried by coherent excitation delocalization by monitoring the L_{1} norm of coherence [37, 38]. We further evaluate a basis-independent measure of coherence [39], called correlated coherence [40], which captures how much of this information is shared between microtubule substructures, and we use the logarithmic negativity as an entanglement measure [41, 42].
+
+Related open-system exciton-transport analyses in pigment–protein complexes, particularly the Fenna–Matthews–Olson (FMO) complex, provide a useful point of comparison for our tryptophan-network results: in both cases, the interplay of coherent couplings, dissipation, and disorder shapes how excitation delocalizes, how quickly coherences decay, and whether environmentally assisted dynamics enhance transport. Representative experimental and theoretical studies of coherence and open-system transport in FMO and related light-harvesting networks include Refs. [34, 43, 33, 44, 45].
+
+Our analysis probes initial conditions that represent distinct routes for correlation propagation. We consider preparations aligned with superradiant and subradiant sectors of the effective generator, a fully coherent uniform superposition across sites, a fully mixed uniform distribution, and site-localized injections that mimic single-photon absorption. We then examine how embedding a single tubulin into dimers and microtubule segments containing one or more spirals (where a spiral denotes one circumferential turn consisting of 13 tubulin dimers in our construction; see Appendix A) redirects correlation pathways, and how scaling to larger ordered assemblies or introducing static energetic disorder (random diagonal site-energy fluctuations) and structural disorder (MD-sampled geometric variability) modulates outward emission versus internal retention. We evolve the system with a trace-preserving Lindblad master equation with time-independent rates constructed from the collective radiative decay matrix, and we compare these dynamics with those generated by an effective non-Hermitian generator. We also quantify the degree of non-Markovianity using a dedicated measure of information backflow on reduced subsystems. This approach connects collective radiative physics to information flow in cytoskeletal chromophore networks, identifying the structural and dynamical settings under which microtubules transiently preserve nonclassical correlations.
+
+In neurons, microtubules form long-lived cytoskeletal tracks and regulatory scaffolds whose properties and interactions are shaped by microtubule-associated proteins and by the tubulin code (isotypes and post-translational modifications) [46, 47]. In this cellular context, our model does not assume that ultraviolet excitations directly implement neuronal computation; rather, it shows that if localized excitation events occur (e.g., photon absorption or oxidative chemistry on aromatic residues), then the resulting dynamics are strongly initial-state dependent. This initial-state dependence can be interpreted as state-selective routing between fast bright channels (rapid export) and slower dark channels (transient retention), providing a concrete way to connect site specificity to testable downstream microtubule-dependent effects and timescales.
+
+The article is organized as follows. Section II describes the model and methods; Section III presents the results; and Section IV discusses the findings and summarizes the study’s implications.
+
+### 
+II Model and Methods
+
+As a starting point for describing the dynamics of radiatively coupled dipoles, we first consider a non-Hermitian effective Hamiltonian formalism:
+
+ H_{\mathrm{eff}}=H_{0}+\Delta-\frac{i}{2}G. 
+
+(1)
+
+which has become widely used in recent literature [11, 12] because it captures both coherent interactions and radiative decay. Here, H_{0} denotes on-site excitation energies,
+
+ H_{0}=\sum_{n=0}^{N-1}\hbar\omega_{0}|n\rangle\langle n|,\qquad\omega_{0}=\frac{2\pi c}{\lambda_{0}},\qquad\lambda_{0}=280\,\mathrm{nm}. 
+
+(2)
+
+We choose \lambda_{0}=280 nm to match the dominant near-UV absorption/excitation band used for tryptophan-rich proteins (A280), so that k_{0}=2\pi/\lambda_{0} corresponds to the radiative wavelength scale relevant for Trp transitions.
+While \Delta and G represent the coherent dipole-dipole coupling and radiative decay matrices:
+
+ \displaystyle\Delta 
+ \displaystyle=\sum_{n\neq m}\Delta_{nm}|n\rangle\langle m|, 
+
+(3)
+
+ \displaystyle G 
+ \displaystyle=\sum_{n}\gamma|n\rangle\langle n|+\sum_{n\neq m}G_{nm}|n\rangle\langle m|. 
+
+(4)
+
+Diagonalizing H_{\mathrm{eff}} yields complex eigenvalues:
+
+ E_{j}=\mathcal{E}_{j}-\frac{i}{2}\Gamma_{j}, 
+
+(5)
+
+where \mathcal{E}_{j} is the mode energy and \Gamma_{j} is its radiative decay rate. Superradiant and subradiant states correspond to modes with high and low \Gamma_{j} , respectively.
+
+While insightful, this approach fails to preserve the trace of the density operator, i.e., it does not guarantee \mathrm{Tr},\rho(t)=1 once radiative decay to the ground state is incorporated, and is therefore inadequate for a consistent description of open quantum dynamics in the presence of decoherence. We therefore extract \Delta_{nm} and G_{nm} from the above framework and proceed with a Lindblad master equation description.
+
+### 
+II.1 Hamiltonian and Dipole Coupling Terms
+
+The full system Hamiltonian used in the Lindblad framework retains the same coherent interaction structure, expressed in the site basis using spin-1/2 excitation creation and excitation annihilation operators:
+
+ \displaystyle H 
+ \displaystyle=H_{0}+\Delta, 
+
+(6)
+
+ \displaystyle H_{0} 
+ \displaystyle=\sum_{n=0}^{N-1}\hbar\omega_{0}\,\sigma_{n}^{+}\sigma_{n}^{-}, 
+
+(7)
+
+ \displaystyle\Delta 
+ \displaystyle=\sum_{n\neq m}\Delta_{nm}\left(\sigma_{n}^{+}\sigma_{m}^{-}+\sigma_{m}^{+}\sigma_{n}^{-}\right). 
+
+(8)
+
+Here, \sigma_{n}^{+} and \sigma_{n}^{-} are the excitation creation and annihilation operators for site n in the two-level (single-excitation) representation. The interaction strength \Delta_{nm} between dipoles n and m is given by:
+
+ \displaystyle\Delta_{nm}=\frac{3\gamma}{4}\Bigg[\left(-\frac{\cos\alpha_{nm}}{\alpha_{nm}}+\frac{\sin\alpha_{nm}}{\alpha_{nm}^{2}}+\frac{\cos\alpha_{nm}}{\alpha_{nm}^{3}}\right)\hat{\mu}_{n}\cdot\hat{\mu}_{m} 
+
+(9)
+
+ \displaystyle\quad-\left(-\frac{\cos\alpha_{nm}}{\alpha_{nm}}+\frac{3\sin\alpha_{nm}}{\alpha_{nm}^{2}}+\frac{3\cos\alpha_{nm}}{\alpha_{nm}^{3}}\right)(\hat{\mu}_{n}\cdot\hat{r}_{nm})(\hat{\mu}_{m}\cdot\hat{r}_{nm})\Bigg], 
+
+where \hat{\mu}_{n} is the transition dipole moment of site n , \hat{r}_{nm} is the unit vector from n to m , r_{nm}=|\mathbf{r}_{n}-\mathbf{r}_{m}| is the center-to-center separation between dipoles, and \alpha_{nm}=k_{0}r_{nm} with k_{0}=\frac{2\pi}{\lambda_{0}} .
+
+### 
+II.2 Decay Matrix and Lindblad Formalism
+
+The collective radiative decay matrix G is similarly computed:
+
+ \displaystyle G_{nm}=\frac{3\gamma}{2}\Bigg[\left(\frac{\sin\alpha_{nm}}{\alpha_{nm}}+\frac{\cos\alpha_{nm}}{\alpha_{nm}^{2}}-\frac{\sin\alpha_{nm}}{\alpha_{nm}^{3}}\right)\hat{\mu}_{n}\cdot\hat{\mu}_{m} 
+
+(10)
+
+ \displaystyle\quad-\left(\frac{\sin\alpha_{nm}}{\alpha_{nm}}+\frac{3\cos\alpha_{nm}}{\alpha_{nm}^{2}}-\frac{3\sin\alpha_{nm}}{\alpha_{nm}^{3}}\right)(\hat{\mu}_{n}\cdot\hat{r}_{nm})(\hat{\mu}_{m}\cdot\hat{r}_{nm})\Bigg]. 
+
+The open quantum system dynamics are then described using the Lindblad master equation:
+
+ \frac{d\rho(t)}{dt}=-i[H,\rho(t)]+\sum_{j}\left(L_{j}\rho(t)L_{j}^{\dagger}-\frac{1}{2}\{L_{j}^{\dagger}L_{j},\rho(t)\}\right), 
+
+(11)
+
+where \rho(t) is the system density matrix and L_{j} are collapse (jump) operators encoding radiative losses; the term “collapse” reflects the quantum-trajectory picture in which application of L_{j} corresponds to an emission event that conditionally updates the system state.
+
+To define L_{j} , we diagonalize the decay matrix:
+
+ G=V\Lambda V^{\dagger},\quad\Lambda=\text{diag}(\gamma_{1},\ldots,\gamma_{N}), 
+
+(12)
+
+with V containing the eigenvectors v^{(j)} of G . The collapse operators are then constructed as:
+
+ L_{j}=\sqrt{\gamma_{j}}\sum_{n=0}^{N-1}v_{n}^{(j)}\sigma_{n}^{-}. 
+
+(13)
+
+This Lindblad-based treatment guarantees trace preservation and consistent thermodynamic behavior while incorporating the same dipole-mediated interactions as the effective non-Hermitian model. In practice, we enforce trace preservation by including an explicit ground (sink) state |0\rangle and radiative jump operators that transfer population from the excitonic manifold to |0\rangle ; thus emission reduces excited-state population without removing total probability from the enlarged state space. The transition to this formalism thus enables a more accurate and physically complete simulation of quantum dynamics in radiatively interacting systems.
+
+### 
+III Results
+
+In this section we report excitation dynamics in networks of eight tryptophan chromophores (see figure 1) embedded in a tubulin environment. The evolution is modeled with a Lindblad master equation built from an effective non-Hermitian generator that includes radiative loss, using site-specific positions and dipole orientations from structural data (see Appendix A). Simulations are performed in QuTiP [48].
+
+ [img: Refer to caption] 
+Figure 1: Structure of the tubulin dimer from Protein Data Bank (PDB) entry 1JFF, rendered using PyMOL (molecular visualization software) [49], highlighting the positions of the eight tryptophan residues. The \alpha -tubulin chain is shown in light gray and the \beta -tubulin chain in dark gray, with tryptophan residues displayed in green. Purple-labeled numbers correspond to specific tryptophan residues analyzed in the study: Trp1 ( \alpha 21), Trp2 ( \alpha 346), Trp3 ( \alpha 388), Trp4 ( \alpha 407), Trp5 ( \beta 21), Trp6 ( \beta 103), Trp7 ( \beta 346), and Trp8 ( \beta 407).
+
+We consider five initial preparations that probe distinct routes for information flow: (i) superradiant eigenstates of H_{\mathrm{eff}} ; (ii) subradiant eigenstates of H_{\mathrm{eff}} ; (iii) a maximally coherent single excitation with uniform phase across the sites; (iv) a maximally mixed single excitation over the sites; and (v) a localized single site excitation. For the single-dimer 8-site network, the Lindblad simulations reported here span ps to tens of ns (e.g., 0–5 ns in Fig. 2c, 0–80 ns in Fig. 3, and 0–15 ns in Figs. 4–5), as set by the time axes in each figure. We report site resolved populations together with quantum correlation measures, including the L_{1} norm of coherence, pairwise coherence among chromophores, and logarithmic negativity as an entanglement witness. When we refer to a chromophore pair (i,j) , the indices label the tryptophan site numbers Trp i and Trp j defined in Fig. 1. Definitions and computational details for these measures are provided in Appendix C.
+
+Throughout the results, we track how correlations are generated, routed, and dissipated across the network, and how preparation and geometry shape the directionality and persistence of nonclassical information flow.
+
+### 
+III.1 Dynamics from the Superradiant Eigenstate
+
+When the system is initialized in the superradiant eigenstate of the non-Hermitian Hamiltonian, corresponding to the mode with the highest radiative decay rate, the excitation undergoes rapid collective dissipation. As shown in Figure 2a, site populations decay almost synchronously, reflecting strong collective coupling to the radiation field. In this regime, the primary channel for information flow is outward: energy and correlations are efficiently transferred to the environment rather than redistributed within the network.
+
+The evolution of correlations is illustrated in Figure 2b, where the L_{1} norm of coherence for the four most correlated chromophore pairs drops sharply within the first \sim 10^{3} ps (about 1 ns) and is largely extinguished over the 0–5 ns window shown (0–5000 ps). The coherence carried by inter-site correlations is radiated away together with the excitation, indicating that the information flow is dominated by rapid leakage rather than internal exchange. The ns-scale lifetime of off-diagonal terms in the density matrix demonstrates that collective enhancement of emission occurs at the cost of retaining local or pairwise correlations.
+
+Figure 2c shows the corresponding logarithmic negativity. Entanglement appears briefly at early times as the excitation delocalizes, but it vanishes quickly as the system relaxes through the radiative channel. This transient entanglement marks a brief surge in correlation exchange before the information is lost to the environment. Overall, the superradiant eigenstate behaves as a fast exporting channel of quantum information, maximizing collective emission but minimizing internal retention of nonclassical correlations.
+
+ [img: Refer to caption] 
+(a) 
+
+ [img: Refer to caption] 
+(b) 
+
+ [img: Refer to caption] 
+(c) 
+
+Figure 2: Excitation dynamics for the initial state corresponding to the superradiant eigenstate of the non-Hermitian Hamiltonian. (a) shows rapid decay of excitation population across all tryptophan sites, characteristic of strong radiative coupling. (b) illustrates the rapid loss of coherence via the L_{1} norm for the four most coherent chromophore pairs. (c) presents the logarithmic negativity, which peaks briefly before vanishing, indicating transient entanglement that dissipates alongside the excitation. Pairs (i,j) denote tryptophan site indices (labels) defined in Fig. 1.
+
+Time is reported in picoseconds (ps) in all panels.
+
+### 
+III.2 Dynamics from the Subradiant Eigenstate
+
+In contrast to the superradiant preparation, initializing the system in the most subradiant eigenstate of the non-Hermitian Hamiltonian yields a much slower release of excitation. As shown in Figure 3a, populations remain within the network for tens of nanoseconds (0–80 ns, i.e., 0– 8\times 10^{4} ps in the plotted window), which indicates strong suppression of radiative loss. In this setting the dominant direction of information flow is internal rather than outward, with excitations and correlations circulating among chromophores before any leakage to the environment.
+
+Correlation dynamics follow the same pattern. In Figure 3b, the L_{1} norm for the four most strongly correlated chromophore pairs remains elevated throughout the full 0–80 ns window shown, demonstrating that off-diagonal terms in the density matrix persist even under weak decay. This persistence reflects sustained internal exchange of phase and amplitude information across the network.
+
+Figure 3c reports the logarithmic negativity for the same pairs. Entanglement remains stable with only gradual attenuation and clear oscillatory structure, consistent with recurrent redistribution of correlations within the subspace protected from radiation. Taken together, these trends identify the subradiant eigenstate as an internal retention channel for quantum information, where population, coherence, and entanglement are preserved and recirculated within the network rather than being quickly exported to the environment.
+
+ [img: Refer to caption] 
+(a) 
+
+ [img: Refer to caption] 
+(b) 
+
+ [img: Refer to caption] 
+(c) 
+
+Figure 3: Excitation dynamics for an initial state corresponding to the most subradiant eigenstate of the non-Hermitian Hamiltonian. (a) shows the site-resolved excitation population, which decays very slowly, indicating suppression of radiative losses. (b) illustrates the L_{1} norm of coherence for the four most coherent chromophore pairs, remaining high throughout the evolution. (c) presents the logarithmic negativity between those pairs, showing sustained and robust bipartite entanglement over time. Pairs (i,j) denote tryptophan site indices (labels) defined in Fig. 1. Time is reported in picoseconds (ps) in all panels.
+
+### 
+III.3 Uniformly Shared Initial Excitation
+
+To explore how spatial distribution of the initial excitation shapes correlation dynamics and information flow, we compare two limiting cases: a fully coherent delocalized state and a completely incoherent mixed state, each uniformly involving all eight tryptophan chromophores.
+
+### 
+III.3.1 Fully Coherent Initial State
+
+We first consider a symmetric and fully coherent initial state where the excitation is delocalized equally across all sites,
+
+ |\psi(0)\rangle=\frac{1}{\sqrt{8}}\sum_{j=1}^{8}|j\rangle, 
+
+(14)
+
+with |j\rangle denoting an excitation localized on the j th chromophore.
+
+The resulting dynamics, shown in Figure 4, reveal that correlations propagate through the network as oscillatory information flow between sites. In Figure 4a, population exchange displays clear interference patterns rather than simple exponential loss, indicating that coherent delocalization enables partial protection from radiative decay through destructive interference.
+
+The correlation measures in Figure 4b show that the L_{1} norm for selected chromophore pairs remains high over the full 0–15 ns window shown (0–15000 ps), confirming that internal information exchange persists even as total excitation diminishes. Entanglement, shown in Figure 4c through logarithmic negativity, rises rapidly and then decays slowly over the same 0–15 ns window, indicating sustained quantum information sharing across multiple chromophore pairs.
+
+Population projections onto the eigenstates of the non-Hermitian Hamiltonian (Figure 4d) show that while both superradiant and subradiant components are initially populated, the dynamics naturally channel population toward subradiant sectors. This gradual self-selection redistributes information flow toward correlation preserving subspaces, where coherence and entanglement remain protected under radiative loss.
+
+ [img: Refer to caption] 
+(a) 
+
+ [img: Refer to caption] 
+(b) 
+
+ [img: Refer to caption] 
+(c) 
+
+ [img: Refer to caption] 
+(d) 
+
+Figure 4: Excitation dynamics for a fully coherent initial state delocalized across all eight tryptophan sites. (a) Site-resolved excitation populations over time. (b) L_{1} norm of coherence for selected chromophore pairs. (c) Logarithmic negativity showing entanglement dynamics. (d) Projection onto the eigenmodes of the effective non-Hermitian Hamiltonian H_{\mathrm{eff}} , classified by their collective radiative rates \Gamma_{j} relative to the single-site rate \gamma (superradiant/bright: \Gamma_{j}/\gamma>1 ; subradiant/dark: \Gamma_{j}/\gamma<1 ). The bright-to-dark crossover is identified when the total projected weight in modes with \Gamma_{j}/\gamma<1 exceeds that in modes with \Gamma_{j}/\gamma>1 . Pairs (i,j) denote tryptophan site indices (labels) defined in Fig. 1. Time is reported in picoseconds (ps) in all panels.
+
+### 
+III.3.2 Fully Incoherent Mixed State
+
+As a contrasting limit, we consider a maximally mixed initial state where excitation is equally distributed across all sites but carries no initial phase correlation,
+
+ \rho(0)=\frac{1}{8}\sum_{j=1}^{8}|j\rangle\langle j|. 
+
+(15)
+
+The corresponding dynamics, shown in Figure 5, demonstrate that the absence of initial coherence prevents any internal information circulation. In Figure 5a, populations decay monotonically and nearly uniformly across all sites, with no evidence of interference mediated redistribution. The L_{1} norm in Figure 5b remains near zero, confirming that no new coherent correlations are generated during the evolution. Likewise, the logarithmic negativity in Figure 5c stays negligible, indicating that entanglement does not emerge spontaneously in the absence of coherent phase relations.
+
+The eigenstate population projections in Figure 5d show that both superradiant and subradiant components are initially populated, but without phase coherence the dynamics do not preferentially channel excitation into the subradiant manifold. Information flow therefore proceeds primarily outward into the environment, resulting in rapid loss of population and vanishing internal correlations. This highlights that coherence is a prerequisite for sustained correlation transport and retention of quantum information within the microtubule network.
+
+ [img: Refer to caption] 
+(a) 
+
+ [img: Refer to caption] 
+(b) 
+
+ [img: Refer to caption] 
+(c) 
+
+ [img: Refer to caption] 
+(d) 
+
+Figure 5: Excitation dynamics for a fully incoherent mixed state uniformly distributed over all eight tryptophan sites. (a) Site-resolved excitation populations. (b) L_{1} norm of coherence for selected chromophore pairs. (c) Logarithmic negativity reflecting lack of entanglement. (d) Projection onto eigenstates of the non-Hermitian Hamiltonian: the plotted weights indicate how population overlaps with eigenmodes j of H_{\mathrm{eff}} , each characterized by a collective radiative rate \Gamma_{j} ; modes with \Gamma_{j}/\gamma>1 are superradiant (bright) and those with \Gamma_{j}/\gamma<1 are subradiant (dark). For a fully mixed initial condition, the projection is broadly distributed and does not selectively target either sector, so the decay is effectively non-preferential across bright and dark channels. Pairs (i,j) denote tryptophan site indices (labels) defined in Fig. 1. Time is reported in picoseconds (ps) in all panels.
+
+### 
+III.4 Site Localized Initial Excitations
+
+To reflect biologically plausible conditions, we examine dynamics when the system is prepared with a single excitation localized on each of the eight tryptophan sites in turn. This mimics natural events in which a photon is absorbed by one chromophore and seeds a site-specific initial state, or in which reactive oxygen species generate localized electronic excitations on aromatic residues under oxidative stress conditions [9].
+
+The population traces for all eight preparations are shown in Figure 6(a to h). (The time axis in Fig. 6 spans the same ps–ns window used for the single-dimer simulations, enabling direct comparison of faster vs. slower leakage across sites.) The temporal behavior depends strongly on the injection site. Preparations at Trp4 or Trp7 yield markedly slower population decay, while preparations at Trp1 or Trp5 relax more rapidly. This site dependence reveals different couplings to radiative channels. Localized states with larger overlap on subradiant sectors of the non-Hermitian spectrum retain population internally for longer, whereas those aligned with superradiant sectors export excitation quickly.
+
+In terms of information flow, a localized injection sets the initial direction for correlation propagation. Sites such as Trp4 and Trp7 not only slow population leakage but also promote internal redistribution of phase and amplitude information before loss to the environment. In contrast, injections at Trp1 or Trp5 favor outward flow, leaving little time for correlations to circulate within the network. Decomposition of each preparation into radiative and protected components therefore acts as a site-selective router that steers both energy and correlations along distinct pathways.
+
+These observations show that spatial location controls access to long lived correlation preserving subspaces. Consequently, site-specific excitation can select quantum lifetimes and shape the balance between internal correlation transport and external emission, a principle that may be relevant for natural light harvesting and for targeted control strategies in bio-inspired excitonic platforms. More specifically, the injection residue sets the overlap with bright versus dark radiative sectors, biasing the dynamics toward rapid export or transient retention; in vivo this bias could be shaped by oxidation hotspots, local binding environments, and tubulin-state regulation [50, 51, 7, 47, 52].
+
+ [img: Refer to caption] 
+(a) 
+
+ [img: Refer to caption] 
+(b) 
+
+ [img: Refer to caption] 
+(c) 
+
+ [img: Refer to caption] 
+(d) 
+
+ [img: Refer to caption] 
+(e) 
+
+ [img: Refer to caption] 
+(f) 
+
+ [img: Refer to caption] 
+(g) 
+
+ [img: Refer to caption] 
+(h) 
+
+Figure 6: Population dynamics for site-localized initial excitations. Each panel shows the site-resolved excitation population over time for an initial excitation localized at a specific tryptophan chromophore: (a) Trp1, (b) Trp2, (c) Trp3, (d) Trp4, (e) Trp5, (f) Trp6, (g) Trp7, (h) Trp8. To interpret the differences in decay/envelope across initial sites, we also analyze the projection onto eigenmodes of the effective non-Hermitian Hamiltonian H_{\mathrm{eff}} , classified by their collective radiative rates \Gamma_{j} relative to the single-site rate \gamma (superradiant/bright: \Gamma_{j}/\gamma>1 ; subradiant/dark: \Gamma_{j}/\gamma<1 ); a bright-to-dark crossover can be identified when the total projected weight in modes with \Gamma_{j}/\gamma<1 exceeds that in modes with \Gamma_{j}/\gamma>1 . Time is reported in picoseconds (ps) in all panels.
+
+### 
+III.5 Coherence Transfer from One Tubulin to a Spiral
+
+ [img: Refer to caption] 
+Figure 7: 
+Schematic defining the subsystem partitions used in this work. A filament denotes a protofilament-aligned chain of \alpha\beta tubulin dimers along the microtubule longitudinal axis (black rectangle). A spiral denotes one circumferential turn (top/cross-section view) consisting of 13 \alpha\beta dimers around the microtubule cylinder (blue ring). Microtubule segments with S spirals correspond to stacking S such circumferential turns along the longitudinal axis. Orange and green indicate \alpha - and \beta -tubulin, respectively (not to scale).
+
+In the previous subsection, we analyzed dynamics within a single tubulin dimer. Here, we keep the same focal dimer and the same initial preparations, but progressively change its environment: first by placing it in a two-tubulin system, and then in microtubule segments containing one and two spirals. In our construction, a “spiral” denotes one circumferential turn of the microtubule lattice consisting of 13 dimers around the cylinder; microtubule segments with additional spirals are formed by stacking successive turns along the longitudinal axis (see Fig. 7). For the spiral calculations (systems larger than a single dimer), the time evolution was performed on national high-performance computing systems provided by the Digital Research Alliance of Canada. For each embedding, we track the four largest pairwise L_{1} coherences within the focal tubulin, labeled by site indices (i,j) , to resolve how embedding redirects correlation pathways and alters information flow.
+
+Embedding reshapes the balance between internal circulation of correlations and outward loss. As shown in Figure 8, the identity of the maximally coherent site pairs changes with embedding, indicating that opening the system to a larger environment redistributes correlations across additional channels. As the environment grows (single \rightarrow dimer \rightarrow spiral), coherence amplitudes within the focal tubulin generally decrease and exhibit more pronounced oscillations, reflecting exchange with surrounding degrees of freedom. Small systems retain a strong dependence on the initial preparation, whereas larger embeddings tend to compress these differences and produce more similar oscillatory patterns across preparations.
+
+ [img: Refer to caption] 
+(a) 
+
+ [img: Refer to caption] 
+(b) 
+
+ [img: Refer to caption] 
+(c) 
+
+ [img: Refer to caption] 
+(d) 
+
+ [img: Refer to caption] 
+(e) 
+
+ [img: Refer to caption] 
+(f) 
+
+ [img: Refer to caption] 
+(g) 
+
+ [img: Refer to caption] 
+(h) 
+
+ [img: Refer to caption] 
+(i) 
+
+ [img: Refer to caption] 
+(j) 
+
+ [img: Refer to caption] 
+(k) 
+
+ [img: Refer to caption] 
+(l) 
+
+ [img: Refer to caption] 
+(m) 
+
+ [img: Refer to caption] 
+(n) 
+
+ [img: Refer to caption] 
+(o) 
+
+ [img: Refer to caption] 
+(p) 
+
+Figure 8: Top four pairwise L_{1} coherences across embeddings and initial states.
+Columns (all rows): from left to right, maximally coherent, maximally mixed, superradiant, and subradiant initial states. Rows: (a–d) single tubulin; (e–h)
+two-tubulin system; (i–l) one spiral; (m–p) two spirals. Each panel shows the
+four site pairs with the largest L_{1} coherence within the tracked tubulin. Pairs (i,j) denote tryptophan site indices (labels) defined in Fig. 1. Time is reported in picoseconds (ps) in all panels.
+
+We observe the same qualitative trends when repeating the analysis with mutual information (see Appendix D, Figure 13).
+
+Evidence for correlation sharing across distinct tubulins is further shown in Appendix D, Figure 14, where inter-tubulin coherence correlations are present for each initial state.
+
+### 
+III.6 Time-Resolved Non-Markovian Backflow on Two Tubulin Subsystems (Single Spiral)
+
+Building on Sec. III.5, where embedding a single tubulin within larger structures redistributed coherence pathways, we now examine whether the surrounding tubulins act as a structured reservoir that can store and then return information to a local subsystem. Here, environment means the other tubulins around the initially prepared tubulin: its partner in a dimer and, in the spiral case, the remaining tubulins. In vivo, tubulin is embedded in an aqueous solvent and hydration shell; such solvent-mediated effects are not included explicitly in the present radiative-loss model and are left for future extensions [53, 54].
+
+We consider a single spiral of 13 tubulins, each with eight tryptophans. For every neighbor T_{k} of the initially prepared tubulin T_{1} , we form the two tubulin subsystem X_{k}=T_{1}\cup T_{k} and study its dynamics within the single excitation manifold while tracing out the other 11 tubulins. Memory effects are quantified via the trace distance backflow of Ref. [55]. Let \{|s\rangle\} denote single excitation basis states on individual tryptophans, with index sets T_{1}=\{s_{1},\ldots,s_{8}\} and T_{k}=\{r_{1},\ldots,r_{8}\} . All other tubulins start in the global ground state |g\rangle . We use normalized uniform superpositions over a full tubulin,
+
+ |10\rangle=\frac{1}{\sqrt{8}}\sum_{s\in T_{1}}|s\rangle,\qquad|01\rangle=\frac{1}{\sqrt{8}}\sum_{r\in T_{k}}|r\rangle, 
+
+which represent single excitations delocalized over the eight tryptophans of T_{1} or T_{k} and are orthogonal in the single excitation space. Two orthogonal pairs, both confined to \mathrm{span}(\{|g\rangle\}\cup T_{1}\cup T_{k}) , are propagated under the same Liouvillian: a population contrast pair |10\rangle versus |01\rangle , and a phase contrast pair (|10\rangle\pm|01\rangle)/\sqrt{2} . During the evolution, excitations that leave X_{k} into the remainder of the spiral are traced out. Non-Markovian information backflow is indicated by revivals of the trace distance
+
+ D_{k}(t)=\tfrac{1}{2}\,\bigl\|\rho^{(1)}_{X_{k}}(t)-\rho^{(2)}_{X_{k}}(t)\bigr\|_{1}, 
+
+which quantifies the operational distinguishability of the two reduced states of X_{k} (larger D_{k} means they can be more easily told apart by an optimal measurement). For CP divisible (Markovian) reduced dynamics, D_{k}(t) is contractive and cannot increase; therefore intervals with \dot{D}_{k}(t)>0 indicate information backflow from the traced-out tubulins into the subsystem [55, 56].
+The associated scalar non-Markovianity for X_{k} is the total positive variation
+
+ \mathcal{N}(k)=\int_{\dot{D}_{k}(t)>0}\dot{D}_{k}(t)\,\mathrm{d}t, 
+
+reported for both initial pairs.
+
+As shown in Fig. 9, D_{k}(t) exhibits revivals for every neighbor tested, yielding nonzero \mathcal{N}(k) across k=2,\ldots,13 . Specific neighbors (notably X_{2} , X_{9} , X_{13} ) show larger responses, consistent with geometry dependent couplings in the spiral. The phase contrast preparation generally produces stronger backflow than the population contrast pair, which points to a leading role for coherence and phase revivals rather than pure population exchange.
+
+Information backflow is relevant for neuronal microtubules because it shows that correlations are not irreversibly lost to surrounding tubulins; the dimer or spiral can transiently store and return population and coherence to a local subsystem. In ordered bundles inside neurons, such structured reservoir effects could provide mesoscale temporal correlations (i.e., intermediate-time memory effects in the reduced subsystem dynamics due to transient information backflow from the surrounding tubulin network) that could in principle influence intracellular signaling and excitonic energy migration by buffering and synchronizing fluctuations. A testable consequence is that the backflow measure \mathcal{N}(k) should vary systematically with local geometry, energetic detuning, temperature or ionic conditions, and the initial phase structure.
+
+ [img: Refer to caption] 
+
+ [img: Refer to caption] 
+
+ [img: Refer to caption] 
+
+ [img: Refer to caption] 
+
+Figure 9: Information backflow on two tubulin subsystems in a single spiral. Top: trace distance dynamics D_{k}(t) for X_{2}=(T_{1},T_{2}) , X_{9}=(T_{1},T_{9}) , and X_{13}=(T_{1},T_{13}) ; solid curves show the population contrast pair |10\rangle versus |01\rangle ; dashed curves show the phase contrast pair (|10\rangle\pm|01\rangle)/\sqrt{2} . Shaded intervals mark \dot{D}_{k}(t)>0 (information backflow). Time is reported in picoseconds (ps) in all panels. Bottom: integrated backflow \mathcal{N}(k) across k=2,\ldots,13 for both preparations.
+
+### 
+III.7 Transition to Larger Assemblies
+
+The previous sections examined how embedding a single tubulin within a dimer or a spiral redistributes coherence and can produce information backflow. We now extend the analysis to larger microtubule assemblies arranged as filaments and as ideal spirals with up to 100 spirals, in order to connect local behavior with system level trends. For these sizes, direct simulation with the Lindblad master equation is not practical, so we use the effective non-Hermitian Hamiltonian in Equation (1) to access eigenmodes and their radiative decay rates. The section proceeds in two steps. First, we quantify pairwise correlated coherence for superradiant and subradiant eigenstates across ordered and disordered structures. Second, we extract radiative lifetimes and analyze how superradiant speedup and subradiant protection scale with size and depend on disorder.
+
+### 
+III.7.1 Correlated Coherence Across Microtubule Structures
+
+We compute the pairwise correlated coherence (based on the L_{1} norm) between Trp sites for the superradiant and subradiant eigenstates. This is evaluated across 100 spiral microtubule configurations constructed either from repeated 1JFF structural units or from randomly selected tubulin dimers taken from molecular dynamics simulations (see appendix A).
+
+For the large microtubule segments, correlated coherence is evaluated between two composite subsystems (each subsystem being a collection of Trp sites) rather than between individual chromophores. Specifically, we consider two geometric partitions: (i) spiral–spiral coherence, where each spiral contains 13 tubulins and therefore 104 Trp sites, and (ii) filament–filament coherence, where each filament subsystem contains 100 tubulins and therefore 800 Trp sites. We then compute correlated coherence between all pairs of such subsystems across the assembly, producing the matrices shown in Figs. 10 and 11.
+We compute the pairwise correlated coherence (based on the L_{1} norm) between composite subsystems defined by collections of Trp sites for the superradiant and subradiant eigenstates.
+
+Figures 10 and 11 highlight the impact of symmetry and disorder on coherence in microtubule systems. In the symmetric microtubule constructed by repeating the 1JFF PDB structure (Fig. 10), coherence in the superradiant state is broadly distributed across the entire lattice, indicating long-range delocalization. In contrast, Fig. 11 demonstrates that introducing disorder, either through spatial variability by randomly sampling tubulin dimers from a molecular dynamics simulation (panels a–d) or through static diagonal noise in the Hamiltonian (panels e–h), substantially disrupts this coherence. In both cases, the superradiant coherence becomes localized and fragmented, confirming that both structural and energetic disorder suppress long-range quantum coherence in the system.
+
+ [img: Refer to caption] 
+(a) 
+
+ [img: Refer to caption] 
+(b) 
+
+ [img: Refer to caption] 
+(c) 
+
+ [img: Refer to caption] 
+(d) 
+
+Figure 10: 
+Correlated coherence between tubulin dimers in a microtubule constructed from the symmetric 1JFF PDB structure.
+All panels correspond to a microtubule segment with 13 filaments (protofilaments) and 100 spirals (circumferential turns); each spiral contains 13 tubulin dimers (see Fig. 7).
+(a–b) show coherence between filaments for the superradiant and subradiant states, respectively.
+(c–d) show coherence between spirals. In this ordered configuration, superradiant coherence is delocalized across the microtubule, reflecting long-range quantum correlations.
+
+ [img: Refer to caption] 
+(a) 
+
+ [img: Refer to caption] 
+(b) 
+
+ [img: Refer to caption] 
+(c) 
+
+ [img: Refer to caption] 
+(d) 
+
+ [img: Refer to caption] 
+(e) 
+
+ [img: Refer to caption] 
+(f) 
+
+ [img: Refer to caption] 
+(g) 
+
+ [img: Refer to caption] 
+(h) 
+
+Figure 11: 
+Correlated coherence in disordered microtubules. All panels correspond to a microtubule segment with 13 filaments (protofilaments) and 100 spirals (circumferential turns); each spiral contains 13 tubulin dimers (see Fig. 7).
+(a–d) correspond to a structure built from randomly sampled frames of a molecular dynamics trajectory (structural/spatial disorder in the dipole geometry).
+(e–h) show coherence in a symmetric microtubule (based on 1JFF) where static energetic disorder has been added via random diagonal fluctuations in the Hamiltonian. In both cases, coherence in the superradiant state is significantly reduced and becomes localized, indicating that both spatial and static disorder disrupt long-range coherence, in contrast to the ordered case in Fig. 10 (here, “reduced” means reduced relative to the ordered 1JFF-based microtubule under the same correlated-coherence measure). Note that the color-bar ranges in Fig. 10 and the present figure differ.
+
+### 
+III.7.2 Lifetimes of Subradiant and Superradiant States
+
+To characterize the radiative behavior of the system, we compute the physical decay rates \Gamma_{i}^{\text{phys}} (in cm-1) from the imaginary part of the eigenvalues of the non-Hermitian effective Hamiltonian.
+
+The corresponding radiative lifetimes \tau_{i} (in seconds) are obtained using the spectroscopic relation:
+
+ \tau_{i}=\frac{1}{2\pi c\Gamma_{i}^{\text{phys}}}, 
+
+where c=2.99792458\times 10^{10}\,\text{cm/s} is the speed of light.
+
+We identify:
+
+- 
+• 
+
+ \tau_{\min} : the lifetime of the most superradiant state (corresponding to the maximum decay rate \Gamma_{\max} ),
+
+- 
+• 
+
+ \tau_{\max} : the lifetime of the most subradiant state (corresponding to the minimum decay rate \Gamma_{\min} ).
+
+These lifetimes provide direct insight into the extent of radiative enhancement or suppression in different structural configurations.
+
+We emphasize that the lifetimes reported here are defined within the Markovian radiative-loss model used throughout the paper. Concretely, \Gamma_{i}^{\text{phys}} is extracted from the imaginary part of the eigenvalues of the effective non-Hermitian generator associated with collective emission, which corresponds to a memoryless (time-independent) coupling to the electromagnetic bath and therefore yields exponential decay envelopes for each collective mode. The non-Markovian behavior discussed in Sec. III.6 is of a different origin: it appears when we trace out part of a finite, structured tubulin environment and analyze reduced dynamics on a subsystem, which can exhibit information backflow even if the global radiative decay model is Markovian. Under static or structural disorder, the lifetime curves in this section should therefore be interpreted as quantifying how disorder reshapes bright–dark rate separation within the Markovian radiative model (e.g., by reducing collectivity and localizing bright components), while subsystem-level memory effects may still occur due to the structured embedding.
+
+We first consider a microtubule constructed by repeating the 1JFF tubulin unit. We then incorporate static disorder into the model by modifying the site energies in the unperturbed Hamiltonian as follows:
+
+ H_{0}\rightarrow H_{0}+\sum_{n=0}^{N-1}\epsilon_{n}(W)|n\rangle\langle n|, 
+
+(16)
+
+where W is the disorder strength in cm-1, and \epsilon_{n}(W) is a uniformly distributed random variable within the range
+
+ \left[-\frac{W}{2},\frac{W}{2}\right]. 
+
+Finally, we consider structural disorder by constructing a microtubule from molecular dynamics data, where tubulin units are randomly positioned.
+
+As seen in Figure 12, increasing the system size in the absence of disorder strongly enhances superradiance (shorter lifetimes) and subradiance (longer lifetimes). For example, the superradiant lifetime decreases significantly while the subradiant one can reach the millisecond range. This shows how cooperative radiative effects intensify with structural size.
+
+However, when either static or structural disorder is introduced, the overall trend remains, but the difference between the smallest and largest structures becomes much smaller, particularly for the superradiant states. For these, the gain in radiative acceleration from one tubulin to 100 spirals becomes marginal, on the order of microseconds. Subradiant states are comparatively more robust, still reaching lifetimes several orders of magnitude longer than superradiant states even under disorder.
+
+This indicates that disorder tends to reduce the contrast between radiative lifetimes and that superradiant states are more sensitive to imperfections than subradiant ones.
+
+ [img: Refer to caption] 
+Figure 12: 
+Radiative lifetimes of the most superradiant (circles) and subradiant (squares) states as a function of structural size, from a single tubulin dimer up to a microtubule segment containing 100 spirals (100 sp), where one spiral (sp) denotes one circumferential turn consisting of 13 dimers in our construction. The solid blue line corresponds to the ideal periodic structure generated using PDB 1JFF. The red dashed line represents the same structure with static disorder of strength W=200 cm-1. The green dotted line corresponds to a structurally disordered microtubule constructed from randomly arranged tubulin units obtained from molecular dynamics simulation.
+
+### 
+IV Discussion and Conclusions
+
+We have investigated excitation dynamics in tryptophan networks of tubulin using a Lindblad master equation constructed from an effective non-Hermitian generator with radiative loss and explicit site geometry. By comparing five well defined preparations and tracking site resolved populations together with quantum information metrics, we showed how preparation, geometry, and environment size jointly control the fate of correlations. Progressively embedding a single \alpha\beta -tubulin into a pair of coupled tubulins, then into a single spiral, and finally into a two-spiral assembly redistributes the leading L_{1} coherences within the focal tubulin, lowers their amplitudes, and introduces oscillatory exchange with the surrounding tubulins. Within a single spiral, two tubulin subsystems exhibit non-Markovian backflow detected by revivals of the trace distance, with a stronger response for phase contrast preparations. Scaling up to large ordered assemblies with the non-Hermitian eigenmode analysis confirmed the complementary roles of superradiant export and subradiant retention, and revealed a clear sensitivity to symmetry and disorder. Ordered structures sustain long-range correlated coherence and widen the gap between bright and dark lifetimes, whereas static energetic and structural disorder localize the superradiant component, suppress long-range coherence, and reduce lifetime contrast while leaving subradiant protection comparatively robust.
+
+Taken together, these results identify microtubule tryptophan networks as structured reservoirs in which symmetry, spatial arrangement, and initial phase determine whether information is rapidly broadcast through bright channels or preferentially stored in dark subspaces [57, 58]. The use of quantum information tools provides a compact and operational language for this partition of roles. The L_{1} norm and correlated coherence resolve where coherence is shared, the trace distance quantifies memory through backflow, and the spectral widths of the effective generator organize radiative lifetimes across scale. This joint dynamical and spectral picture offers a coherent framework for discussing amplification, buffering, and timing in biological excitonic networks.
+
+Biologically, our initial-state comparison does not imply that microtubules must use quantum correlations for neural processing; rather, it shows that a structured tryptophan network can route dynamics differently depending on how an excitation is prepared (localized vs delocalized, and with different relative phases), biasing the evolution toward rapid export (bright channels) or transient retention (dark subspaces). In cells, plausible sources of site-specific preparation include localized absorption events and redox/ROS-driven chemistry on aromatic residues [50, 51]. Any downstream coupling, if present, would most plausibly be indirect, through changes in dissipation patterns or local interaction landscapes that regulate established microtubule functions (transport, MAP binding, and tubulin-code-dependent modulation) [52, 59, 47]. This motivates future work that links bright-versus-dark routing to specific biochemical readouts and experimentally measurable conditions. Relatedly, the trace-distance revivals reported in Sec. III.6 indicate short-time memory effects in reduced tubulin subsystems, suggesting that nearby excitation events in a finite spiral need not behave as independent memoryless decays [55, 56].
+
+Our results also connect naturally to earlier proposals that treat microtubules as quantum information channels. In those works, excitation migration and quantum relaxation in tryptophan chains and dipole networks were shown to support entanglement transfer and biologically relevant coherence times [18, 19, 20, 21, 22, 23] (here, “biologically relevant” is used in a limited operational sense: persistence of population/coherence in protected subspaces over timescales that could, in principle, overlap with downstream molecular degrees of freedom evolving on ns–ms scales). Here we add a complementary radiative perspective, showing that, even in the presence of collective emission, structured tryptophan networks can transiently store and redistribute correlations, with symmetry and preparation determining whether they behave more like broadcasting channels or short-term quantum buffers.
+
+Two timescales should be distinguished. First, coherent redistribution within a local Trp network occurs on the ps–ns scale set by dipole couplings (Secs. 3.1–3.4). Second, the radiative lifetimes of collective eigenmodes can extend to much longer scales in ordered assemblies (Sec. 3.7.2), while disorder tends to localize bright components and compress lifetime contrasts. By “functional relevance” we therefore do not claim a specific cellular mechanism; rather, we provide a concrete timescale-matching criterion: whether retention of population/coherence in subradiant (dark) sectors overlaps with the timescales of molecular state variables that could be sensitive to local excitation or electrostatic reorganization (e.g., conformational microstate occupancy, binding/unbinding kinetics of interaction partners, or chemically mediated state changes). This framing can guide experiments aimed at testing whether, and under what structural conditions, optical excitations couple measurably to downstream microtubule-associated dynamics, including in neuronal contexts where microtubules can be comparatively stable.
+
+The present model characterizes relaxation following an impulsive, single-excitation preparation under radiative loss. In living systems, nonequilibrium biochemical inputs (e.g., energy release associated with GTP hydrolysis, redox/ROS chemistry, or enzymatic activity) could act as driving, either indirectly by modulating site energies/couplings or, in a phenomenological description, by maintaining excited-state population out of equilibrium. Within the Lindblad framework, such driving can be included either (i) as incoherent pumping through additional jump operators (e.g., L^{\mathrm{pump}}_{n}=\sqrt{p_{n}}\,\sigma_{n}^{+} with pump rate p_{n} ), or (ii) as coherent driving through an added Hamiltonian term (e.g., H_{\mathrm{drive}}(t)=\sum_{n}\Omega_{n}(t)\,(\sigma_{n}^{+}+\sigma_{n}^{-}) ). Incoherent pumping sustains nonequilibrium populations but typically introduces additional dephasing, so it does not necessarily extend coherence unless the pumping selectively populates (or repeatedly refills) symmetry-protected dark/subradiant subspaces; coherent driving can maintain phase relations but corresponds to a distinct physical regime (e.g., an external optical field). In the limit of rare, localized injection events, the driven dynamics can often be approximated by mixtures over the localized preparations already studied in Sec. 3.4. These extensions provide a clear next step for assessing how continuous energy throughput reshapes the balance between superradiant export and subradiant retention, particularly in the presence of disorder.
+
+There are also clear theoretical next steps. Extending the master equation to include non-radiative decay, structured dephasing, and explicit vibronic coupling would refine the link between geometry and memory. Beyond the single excitation manifold, many-body effects and exciton-exciton interactions could be addressed with stochastic Liouville or time-nonlocal kernels to assess the stability of backflow and subradiant protection under crowding. On the structural side, graph-based analyses of eigenmodes and coherence pathways, together with ensemble averaging over realistic static and dynamic disorder, can connect microscopic organization to emergent timescales. Finally, casting the dynamics in information theoretic terms such as coherence length, channel distinguishability, and resource conversion rates may help compare microtubule networks with other biological light responsive systems within a unified quantitative language.
+
+In summary, master equation dynamics augment static spectral analysis and reveal how geometry, preparation, and environment size regulate the balance between export and retention of quantum information in tubulin-based networks. The combination of non-Hermitian eigenmode structure with quantum information metrics yields a versatile toolbox for biological systems, clarifying when coherence is delocalized, when it is protected, and when memory effects reshape the local flow of information.
+
+### Author Contributions
+
+Conceptualization: L.G., O.P., and T.J.A.C.; Methodology: L.G., O.P., and T.J.A.C.; Formal analysis: L.G.; Resources: T.J.A.C.; Data curation: L.G.; Writing—original draft preparation: L.G.; Writing—review and editing: L.G., O.P., and T.J.A.C.; Visualization: L.G.; Supervision: T.J.A.C. and O.P.; Project administration: T.J.A.C.; Funding acquisition: T.J.A.C.
+
+### Funding
+
+This research was undertaken in part thanks to funding to T.J.A.C. from the Canada Research Chairs Program (CRC-2022-00204) and the University of Waterloo. L.G. acknowledges support from the University of Waterloo Provost’s Program for Interdisciplinary Postdoctoral Scholars.
+
+### Data Availability Statement
+
+Data supporting the findings of this study are available from the corresponding author (L.G.) upon reasonable request.
+
+### Acknowledgments
+
+During the preparation of this manuscript, the authors used an AI-assisted language tool to help improve the clarity and readability of the text. All AI-assisted content was reviewed and edited by the authors, who take full responsibility for the integrity and accuracy of the final manuscript. This research was enabled in part by support provided by the Digital Research Alliance of Canada (alliancecan.ca) to T.J.A.C.
+
+### Conflicts of Interest
+
+The authors declare that they have no conflicts of interest.
+
+### 
+Appendix A Construction of Ordered and Disordered Microtubule Geometries
+
+### 
+A.1 Microtubule Geometry Construction
+
+Ordered microtubules are assembled by repeating the 1JFF tubulin dimer and arranging dimers with a left-handed spiral geometry following prior work [12, 10] and using the code provided by Patwa et al. [11]. The initial dimer orientation places the alpha and beta subunits along the protofilament direction which we define as the x axis. Each dimer is transformed by the following sequence. Rotation by -55.38^{\circ} about the longitudinal axis. Rotation by 11.7^{\circ} about an axis through the beta tubulin Trp346 CD2 atom. Translation by 11.2 nm in the y direction and 0.3 nm in the z direction. To generate the N th dimer in a spiral two additional operations are applied. Rotation by 27.69^{\circ} about the x axis. Translation by 0.9 nm along x . One spiral contains 13 dimers and the resulting diameter is approximately 22.4 nm. The radius measured from the microtubule longitudinal axis to the center of mass of a dimer is near 11.2 nm which lies between the outer surface radius near 13.5 nm and the inner lumen radius near 9.5 nm. Multiple spirals are concatenated by translations of 8 nm along the x axis.
+
+### 
+A.2 Structural Disorder from Molecular Dynamics
+
+Geometric variability is sampled by molecular dynamics of a tubulin dimer and by assembling microtubules from snapshot structures. Simulations were performed using the AMBER molecular dynamics package (AMBER 22, pmemd; 2022) [60] at 310 K for a production length of 6.2 ns. The initial template was taken from PDB entry 1TVK with missing residues completed by homology modeling (Swiss-Model) [61]. Protonation states including histidine assignments were set near neutral pH using a continuum electrostatics based tool (H++ at pH 7, with histidines further refined using PROPKA) [62, 63]. Tubulin was described with the ff14SB force field [64], and the tubulin–nucleotide complexes (GTP- and GDP-bound forms) were assembled in LEaP (ff14SB loaded in LEaP) using standard Amber libraries and any additional Amber-compatible parameter files as needed. The system was neutralized and solvated in LEaP in a TIP3P water box with a buffer of 25 Å. After minimization and equilibration a production trajectory was generated and analyzed with cpptraj (AmberTools distributed with AMBER 22) [65]. Trajectory coordinates were saved every 1,000 steps (2 ps), yielding 3100 frames. We extracted these frames and used their coordinates to replace the ordered 1JFF dimer in the construction pipeline. Disordered microtubules were built up to 100 spirals which corresponds to 1300 dimers, using high-performance computing resources provided by the Digital Research Alliance of Canada.
+
+### 
+Appendix B Connection Between the Non-Hermitian Hamiltonian
+and the Lindblad Master Equation
+
+We begin with the general Lindblad-type master equation for a density operator \rho :
+
+ \dot{\rho}=-i[H,\rho]+\sum_{\mu}\gamma_{\mu}\left(L_{\mu}\rho L_{\mu}^{\dagger}-\tfrac{1}{2}\{L_{\mu}^{\dagger}L_{\mu},\rho\}\right), 
+
+(17)
+
+where H is the system Hamiltonian, L_{\mu} are collapse (jump) operators, and \gamma_{\mu} the associated rates.
+
+### 
+B.1 Effective Non-Hermitian Hamiltonian
+
+We define the effective non-Hermitian Hamiltonian as
+
+ H_{\mathrm{eff}}=H-\frac{i}{2}\sum_{\mu}\gamma_{\mu}L_{\mu}^{\dagger}L_{\mu}. 
+
+(18)
+
+Using this, the master equation (17) can be rewritten as
+
+ \dot{\rho}=-i\left(H_{\mathrm{eff}}\rho-\rho H_{\mathrm{eff}}^{\dagger}\right)+\sum_{\mu}\gamma_{\mu}L_{\mu}\rho L_{\mu}^{\dagger}. 
+
+(19)
+
+If the last “quantum jump” term is neglected, the dynamics reduce to purely non-Hermitian Hamiltonian evolution. In the quantum-trajectory (unraveling) picture, this corresponds to the conditional no-jump evolution (i.e., evolution conditioned on no emission event), while the jump term restores trace preservation on average [35, 66, 67].
+
+### 
+B.2 Effective Hamiltonian in Dipole Networks
+
+In models of radiatively coupled dipoles, the effective Hamiltonian typically takes the form
+
+ H_{\mathrm{eff}}=\sum_{n=1}^{N}\left(\hbar\omega_{0}-\tfrac{i}{2}\gamma\right)|n\rangle\langle n|+\sum_{\begin{subarray}{c}m,n=1\\
+m\neq n\end{subarray}}^{N}\left(\Omega_{mn}-\tfrac{i}{2}\Gamma_{mn}\right)|m\rangle\langle n|, 
+
+(20)
+
+where |n\rangle denotes a localized excitation at site n , \Omega_{mn} is the coherent dipole–dipole coupling, and \Gamma_{mn} are the collective radiative decay terms (In the main text we denote the collective decay matrix by G ; here \Gamma plays the same role).
+
+### 
+B.3 Lindblad Formulation in the Single-Excitation Plus Ground-State Space
+
+To recover the full open-system dynamics, we return to Eq. (19).
+Writing the system Hamiltonian in the site basis,
+
+ H=\sum_{n=1}^{N}\hbar\omega_{0}|n\rangle\langle n|+\sum_{m\neq n}\Omega_{mn}|m\rangle\langle n|, 
+
+(21)
+
+the radiative Lindblad equation can be written as
+
+ \dot{\rho}=-i[H,\rho]+\sum_{m,n=1}^{N}\Gamma_{mn}\left(|0\rangle\langle m|\,\rho\,|n\rangle\langle 0|-\tfrac{1}{2}\{|n\rangle\langle m|,\rho\}\right), 
+
+(22)
+
+where |0\rangle denotes the ground state (absence of excitation).
+
+It is often helpful to define local excitation annihilation and excitation creation operators,
+
+ \sigma_{n}^{-}=|0\rangle\langle n|,\qquad\sigma_{n}^{+}=|n\rangle\langle 0|. 
+
+(23)
+
+With this notation, the dissipator becomes
+
+ \sum_{m,n=1}^{N}\Gamma_{mn}\left(\sigma_{m}^{-}\rho\sigma_{n}^{+}-\tfrac{1}{2}\{\sigma_{n}^{+}\sigma_{m}^{-},\rho\}\right), 
+
+(24)
+
+which makes explicit that the radiative channels are determined by the Hermitian positive semidefinite matrix \Gamma . The standard construction of collective collapse operators is obtained by diagonalizing \Gamma , as described next.
+
+### 
+B.4 Collective Collapse Operators from the Decay Matrix
+
+Since \Gamma is Hermitian and positive semidefinite, it admits an eigendecomposition
+
+ \Gamma=V\Lambda V^{\dagger},\qquad\Lambda=\mathrm{diag}(\gamma_{1},\ldots,\gamma_{N}), 
+
+(25)
+
+where the columns v^{(j)} of V are orthonormal eigenvectors and \gamma_{j}\geq 0 are eigenvalues. Substituting this into the dissipator yields a sum of independent Lindblad channels with collective jump operators
+
+ L_{j}=\sqrt{\gamma_{j}}\sum_{n=1}^{N}v_{n}^{(j)}\,\sigma_{n}^{-}=\sqrt{\gamma_{j}}\sum_{n=1}^{N}v_{n}^{(j)}\,|0\rangle\langle n|. 
+
+(26)
+
+This makes transparent how superradiant and subradiant channels arise: eigenmodes with large \gamma_{j} correspond to bright (enhanced-decay) channels, while those with small \gamma_{j} correspond to dark (suppressed-decay) channels [35, 66, 67].
+
+### 
+B.5 Single Excitation Subspace and Conditional Evolution
+
+When the dynamics are projected onto the single excitation manifold without including the ground state \ket{0} , radiative quantum jumps that take population to \ket{0} are excluded by construction. In this reduced description, the evolution is the conditional no-jump dynamics generated by the effective non-Hermitian Hamiltonian,
+
+ \dot{\rho}(t)=-i\!\left(H_{\mathrm{eff}}\rho(t)-\rho(t)H_{\mathrm{eff}}^{\dagger}\right), 
+
+(27)
+
+which is not trace preserving and should be interpreted as the evolution conditioned on the absence of emission events (no-jump evolution in a quantum-trajectory unraveling) [35, 66, 67].
+
+In the trace preserving, completely positive Lindblad model used in our main simulations, we do include the ground state \ket{0} and the associated collective jump operators obtained from the eigendecomposition G=V\Lambda V^{\dagger} :
+
+ L_{j}=\sqrt{\gamma_{j}}\sum_{n}v^{(j)}_{n}\,\ket{0}\!\bra{n},\qquad\Lambda=\mathrm{diag}(\gamma_{1},\ldots,\gamma_{N}). 
+
+(28)
+
+The full master equation then reads
+
+ \dot{\rho}(t)=-i[H,\rho(t)]+\sum_{j}\left(L_{j}\,\rho(t)\,L_{j}^{\dagger}-\tfrac{1}{2}\{L_{j}^{\dagger}L_{j},\rho(t)\}\right), 
+
+(29)
+
+which conserves \mathrm{Tr}\,\rho(t) while allowing population to leave the single excitation sector into \ket{0} through the collective emission channels.
+
+The non-Hermitian Hamiltonian formalism arises as an approximation to the full Lindblad equation when quantum jumps into the ground state are neglected (e.g., in the restricted single-excitation subspace). The Lindblad master equation generalizes this approach by incorporating both coherent dynamics and irreversible radiative decay in a trace-preserving manner.
+
+### 
+Appendix C Quantum Information Measures
+
+### 
+C.1 Quantum Coherence
+
+To quantify quantum coherence within the tryptophan (Trp) network and between its substructures (e.g., spiral and filament regions), we employ the l_{1} -norm of coherence as introduced in the resource theory of quantum coherence. For a density matrix \rho in a fixed reference basis {\ket{i}} , the l_{1} -norm of coherence is defined as:
+
+ C_{l_{1}}(\rho)=\sum_{i\neq j}|\rho_{ij}|, 
+
+(30)
+
+where \rho_{ij} are the off-diagonal elements of \rho . This measure captures the total amount of coherence present in the system relative to the chosen basis.
+
+To investigate how coherence is distributed and shared between different regions, we calculate the correlated coherence between subsystems A and B (e.g., spiral vs. filament domains). The correlated coherence C_{\text{corr}} is defined as:
+
+ C_{\text{corr}}=C_{l_{1}}(\rho_{AB})-C_{l_{1}}(\rho_{A})-C_{l_{1}}(\rho_{B}), 
+
+(31)
+
+where \rho_{AB} is the density matrix of the full system, \rho_{A}=\mathrm{Tr}B[\rho{AB}] and \rho_{B}=\mathrm{Tr}A[\rho{AB}] are the reduced density matrices of subsystems A and B , respectively.
+
+This quantity isolates the coherence that is genuinely shared between the two subsystems and is not attributable to local coherences alone.
+
+### 
+C.2 Logarithmic Negativity
+
+The negativity, denoted as N(\rho) , quantifies entanglement in bipartite quantum systems, \rho_{AB} [68]. It is given by summing over the absolute of the negative eigenvalues, \lambda_{i} , of the partially transposed density matrix, \rho_{A}^{T} ,
+
+ N(\rho_{AB})=\sum_{i}|\lambda_{i}|. 
+
+(32)
+
+The logarithmic negativity, E_{N} , is related to the negativity and serves as a good indicator of the degree of entanglement. It is defined as
+
+ E_{N}(\rho_{AB})=\log_{2}(2N(\rho_{AB})+1). 
+
+(33)
+
+### 
+C.3 Mutual Information
+
+We quantify total correlations by the quantum mutual information
+
+ I(A{:}B,t)=S\!\left(\rho_{A}(t)\right)+S\!\left(\rho_{B}(t)\right)-S\!\left(\rho_{AB}(t)\right),\quad S(\rho)=-\mathrm{Tr}\,\rho\log_{2}\rho, 
+
+where \rho_{AB}(t) is the reduced density operator on a chosen bipartition A\otimes B , and \rho_{A}=\mathrm{Tr}_{B}\rho_{AB} , \rho_{B}=\mathrm{Tr}_{A}\rho_{AB} . All reductions respect the single-excitation model: populations outside the chosen subsystem are traced into the local ground state |0\rangle .
+
+### 
+Appendix D Supplementary Results
+
+### 
+D.1 Mutual Information
+
+In Fig. 13 we summarize, for each embedding and initial state, the four site pairs with the largest time-averaged pair mutual information, highlighting how the pattern of information sharing evolves from localized (single tubulin) to increasingly delocalized (spirals).
+
+ [img: Refer to caption] 
+(a) 
+
+ [img: Refer to caption] 
+(b) 
+
+ [img: Refer to caption] 
+(c) 
+
+ [img: Refer to caption] 
+(d) 
+
+ [img: Refer to caption] 
+(e) 
+
+ [img: Refer to caption] 
+(f) 
+
+ [img: Refer to caption] 
+(g) 
+
+ [img: Refer to caption] 
+(h) 
+
+ [img: Refer to caption] 
+(i) 
+
+ [img: Refer to caption] 
+(j) 
+
+ [img: Refer to caption] 
+(k) 
+
+ [img: Refer to caption] 
+(l) 
+
+ [img: Refer to caption] 
+(m) 
+
+ [img: Refer to caption] 
+(n) 
+
+ [img: Refer to caption] 
+(o) 
+
+ [img: Refer to caption] 
+(p) 
+
+Figure 13: Top four pairwise mutual information values across embeddings and initial states.
+Columns (all rows): from left to right, maximally coherent, maximally mixed, superradiant,
+and subradiant initial states. Rows: (a–d) single tubulin; (e–h) two-tubulin system; (i–l) one spiral; (m–p) two spirals. Each panel shows the four site pairs with the largest mutual
+information within the tracked tubulin. Pairs (i,j) denote tryptophan site indices (labels) defined in Fig. 1. Time is reported in picoseconds (ps) in all panels.
+
+### 
+D.2 Correlated Coherence Across One Spiral
+
+We evaluate how quantum coherence is shared between the excited tubulin (no. 2) and the remaining tubulins in a single spiral (Fig. 14).
+For each pair (2,k) , the correlated coherence is computed.
+For every initial condition, maximally coherent, maximally mixed, superradiant, and subradiant, we plot the time evolution of C_{\mathrm{corr}}(2{:}k) for all partner tubulins k\neq 2 .
+
+ [img: Refer to caption] 
+
+ [img: Refer to caption] 
+
+ [img: Refer to caption] 
+
+ [img: Refer to caption] 
+
+Figure 14: Correlated coherence between the initially excited tubulin (no. 2) and all other tubulins in the spiral, shown for four distinct initial conditions. Each line corresponds to a pair (2,k) with k\in\{1,3,\dots,13\} . The correlated coherence quantifies the portion of \ell_{1} -coherence shared between subsystems beyond their local contributions. Time is reported in picoseconds (ps) in all panels.
+
+### References
+
+- 
+Fries [2015]
+
+Fries, P.
+
+Rhythms for cognition.
+
+Neuron 2015, 88, 220–235.
+
+https://doi.org/10.1016/j.neuron.2015.09.034.
+
+- 
+Bastos and Schoffelen [2015]
+
+Bastos, A.M.; Schoffelen, J.M.
+
+A Tutorial Review of Functional Connectivity Analysis Methods and
+Their Interpretational Pitfalls.
+
+Frontiers in Systems Neuroscience 2015, 9, 175.
+
+https://doi.org/10.3389/fnsys.2015.00175.
+
+- 
+Schreiber [2000]
+
+Schreiber, T.
+
+Measuring Information Transfer.
+
+Physical Review Letters 2000, 85, 461–464.
+
+https://doi.org/10.1103/PhysRevLett.85.461.
+
+- 
+Vicente et al. [2011]
+
+Vicente, R.; Wibral, M.; Lindner, M.; Pipa, G.
+
+Transfer entropy – a model-free measure of effective connectivity
+for the neurosciences.
+
+Journal of Computational Neuroscience 2011, 30, 45–67.
+
+https://doi.org/10.1007/s10827-010-0262-3.
+
+- 
+Baas et al. [2016]
+
+Baas, P. W.; Rao, A. N.; Matamoros, A. J.; Leo, L.
+
+Stability properties of neuronal microtubules.
+
+Cytoskeleton (Hoboken) 2016, 73, 442–460.
+
+https://doi.org/10.1002/cm.21286.
+
+- 
+Li and Black [1996]
+
+Li, Y.; Black, M. M.
+
+Microtubule assembly and turnover in growing axons.
+
+Journal of Neuroscience 1996, 16, 531–544.
+
+https://doi.org/10.1523/JNEUROSCI.16-02-00531.1996.
+
+- 
+Kalra et al. [2023]
+
+Kalra, A.P.; Benny, A.; Travis, S.M.; Zizzi, E.A.; Morales-Sanchez, A.;
+Oblinsky, D.G.; Craddock, T.J.; Hameroff, S.R.; MacIver, M.B.; Tuszynski,
+J.A.; et al.
+
+Electronic energy migration in microtubules.
+
+ACS Central Science 2023, 9, 352–361.
+
+https://doi.org/10.1021/acscentsci.2c01114.
+
+- 
+Craddock et al. [2014]
+
+Craddock, T.J.A.; Friesen, D.; Mane, J.; Hameroff, S.; Tuszynski, J.A.
+
+The feasibility of coherent energy transfer in microtubules.
+
+J. R. Soc. Interface 2014, 11 (100), 20140677.
+
+https://doi.org/10.1098/rsif.2014.0677.
+
+- 
+Kurian et al. [2017]
+
+Kurian, P.; Obisesan, T.; Craddock, T.J.
+
+Oxidative species-induced excitonic transport in tubulin aromatic
+networks: Potential implications for neurodegenerative disease.
+
+Journal of Photochemistry and Photobiology B: Biology 2017, 175, 109–124.
+
+- 
+Babcock et al. [2024]
+
+Babcock, N.; Montes-Cabrera, G.; Oberhofer, K.; Chergui, M.; Celardo, G.;
+Kurian, P.
+
+Ultraviolet superradiance from mega-networks of tryptophan in
+biological architectures.
+
+The Journal of Physical Chemistry B 2024.
+
+https://doi.org/10.1021/acs.jpcb.3c07936.
+
+- 
+Patwa et al. [2024]
+
+Patwa, H.; Babcock, N.S.; Kurian, P.
+
+Quantum-enhanced photoprotection in neuroprotein architectures
+emerges from collective light-matter interactions.
+
+Frontiers in Physics 2024, 12, 1387271.
+
+https://doi.org/10.3389/fphy.2024.1387271.
+
+- 
+Celardo et al. [2019]
+
+Celardo, G.; Angeli, M.; Craddock, T.; Kurian, P.
+
+On the existence of superradiant excitonic states in microtubules.
+
+New Journal of Physics 2019, 21, 023005.
+
+https://doi.org/10.1088/1367-2630/aaf839.
+
+- 
+Rotter [2009]
+
+Rotter, I.
+
+A non-Hermitian Hamilton operator and the physics of open quantum
+systems.
+
+Journal of Physics A: Mathematical and Theoretical 2009,
+42, 153001.
+
+https://doi.org/10.1088/1751-8113/42/15/153001.
+
+- 
+Ashida et al. [2020]
+
+Ashida, Y.; Gong, Z.; Ueda, M.
+
+non-Hermitian physics.
+
+Advances in Physics 2020, 69, 249–435.
+
+https://doi.org/10.1080/00018732.2021.1876991.
+
+- 
+Celardo et al. [2012]
+
+Celardo, G.L.; Borgonovi, F.; Merkli, M.; Tsifrinovich, V.I.; Berman, G.P.
+
+Superradiance transition in photosynthetic light harvesting
+complexes.
+
+The Journal of Physical Chemistry C 2012, 116, 22105–22111.
+
+https://doi.org/10.1021/jp302627w.
+
+- 
+Wang et al. [2023]
+
+Wang, C.; Ren, J.; Zhu, X.; El-Ganainy, R.
+
+Non Hermitian optics and photonics from classical to quantum.
+
+Advances in Optics and Photonics 2023, 15, 1097–1238.
+
+https://doi.org/10.1364/AOP.475477.
+
+- 
+Bergholtz et al. [2021]
+
+Bergholtz, E.J.; Budich, J.C.; Kunst, F.K.
+
+Exceptional topology of non Hermitian systems.
+
+Reviews of Modern Physics 2021, 93, 015005.
+
+https://doi.org/10.1103/RevModPhys.93.015005.
+
+- 
+Shirmovsky and Chizhov [2023]
+
+Shirmovsky, S.E.; Chizhov, A.V.
+
+Modeling of the entangled states transfer processes in microtubule
+tryptophan system.
+
+BioSystems 2023, 231, 104967.
+
+https://doi.org/10.1016/j.biosystems.2023.104967.
+
+- 
+Shirmovsky [2024a]
+
+Shirmovsky, S.E.
+
+Modeling of the quantum entangled state transfer protocol in the cell
+microtubules.
+
+BioSystems 2024, 235, 105100.
+
+https://doi.org/10.1016/j.biosystems.2023.105100.
+
+- 
+Shirmovsky [2024b]
+
+Shirmovsky, S.E.
+
+On the possibility of implementing a quantum entanglement
+distribution in a biosystem: Microtubules.
+
+BioSystems 2024, 245, 105320.
+
+https://doi.org/10.1016/j.biosystems.2024.105320.
+
+- 
+Shirmovsky and Shulga [2021]
+
+Shirmovsky, S.E.; Shulga, D.V.
+
+Quantum relaxation effects in Microtubules.
+
+Physica A: Statistical Mechanics and its Applications 2021, 582, 126254.
+
+https://doi.org/10.1016/j.physa.2021.126254.
+
+- 
+Shirmovsky and Shulga [2023]
+
+Shirmovsky, S.E.; Shulga, D.V.
+
+Quantum relaxation processes in microtubule tryptophan system.
+
+Physica A: Statistical Mechanics and its Applications 2023, 617, 128687.
+
+https://doi.org/10.1016/j.physa.2023.128687.
+
+- 
+Saenko et al. [2025]
+
+Saenko, V.A.; Shirmovsky, S.E.; Shulga, D.V.
+
+Detailed analysis of the quantum relaxation features in the cell
+microtubules: Markovian and Non-Markovian dynamics.
+
+BioSystems 2025, 254, 105520.
+
+https://doi.org/10.1016/j.biosystems.2025.105520.
+
+- 
+Nishiyama et al. [2025]
+
+Nishiyama, A.; Tanaka, S.; Tuszynski, J.A.
+
+Waveguide Quantum Electrodynamics: Tryptophans Entangled with Water
+as Data Qubits in a Microtubule.
+
+Dynamics 2025, 5, 7.
+
+https://doi.org/10.3390/dynamics5010007.
+
+- 
+Hameroff [2004]
+
+Hameroff, S.R.
+
+A new theory of the origin of cancer: quantum coherent entanglement,
+centrioles, mitosis, and differentiation.
+
+BioSystems 2004, 77, 119–136.
+
+https://doi.org/10.1016/j.biosystems.2004.04.006.
+
+- 
+An and Choi [2025]
+
+An, S.; Choi, B.S.
+
+Surface code model for Fibonacci helical pathways of the Orch OR
+microtubule.
+
+BioSystems 2025, 249, 105414.
+
+https://doi.org/10.1016/j.biosystems.2025.105414.
+
+- 
+Lindblad [1976]
+
+Lindblad, G.
+
+On the generators of quantum dynamical semigroups.
+
+Communications in Mathematical Physics 1976, 48, 119–130.
+
+https://doi.org/10.1007/BF01608499.
+
+- 
+Gorini et al. [1976]
+
+Gorini, V.; Kossakowski, A.; Sudarshan, E.C.G.
+
+Completely positive dynamical semigroups of N-level systems.
+
+Journal of Mathematical Physics 1976, 17, 821–825.
+
+https://doi.org/10.1063/1.522979.
+
+- 
+Ishizaki and Fleming [2009a]
+
+Ishizaki, A.; Fleming, G.R.
+
+Unified treatment of quantum coherent and incoherent hopping dynamics
+in electronic energy transfer.
+
+The Journal of Chemical Physics 2009, 130, 234111.
+
+https://doi.org/10.1063/1.3155372.
+
+- 
+Ishizaki and Fleming [2009b]
+
+Ishizaki, A.; Fleming, G.R.
+
+On the adequacy of the Redfield equation and related approaches to
+describe exciton dynamics in photosynthetic systems.
+
+The Journal of Chemical Physics 2009, 130, 234110.
+
+https://doi.org/10.1063/1.3155214.
+
+- 
+Huelga and Plenio [2013]
+
+Huelga, S.F.; Plenio, M.B.
+
+Vibrations, quanta and biology.
+
+Contemporary Physics 2013, 54, 181–207.
+
+https://doi.org/10.1080/00405000.2013.829687.
+
+- 
+Mohseni et al. [2008]
+
+Mohseni, M.; Rebentrost, P.; Lloyd, S.; Aspuru-Guzik, A.
+
+Environment assisted quantum walks in photosynthetic energy transfer.
+
+The Journal of Chemical Physics 2008, 129, 174106.
+
+https://doi.org/10.1063/1.3002335.
+
+- 
+Rebentrost et al. [2009]
+
+Rebentrost, P.; Mohseni, M.; Aspuru-Guzik, A.
+
+Role of quantum coherence and environmental fluctuations in
+chromophoric energy transport.
+
+The Journal of Physical Chemistry B 2009, 113, 9942–9947.
+
+https://doi.org/10.1021/jp901724d.
+
+- 
+Engel et al. [2007]
+
+Engel, G.S.; et al.
+
+Evidence for wavelike energy transfer through quantum coherence in
+photosynthetic systems.
+
+Nature 2007, 446, 782–786.
+
+https://doi.org/10.1038/nature05678.
+
+- 
+Breuer et al. [2002]
+
+Breuer, H.P.; Petruccione, F.; et al.
+
+The theory of open quantum systems; Oxford University Press on
+Demand, 2002.
+
+- 
+Panitchayangkoon et al. [2010]
+
+Panitchayangkoon, G.; et al.
+
+Long lived quantum coherence in photosynthetic complexes.
+
+Proceedings of the National Academy of Sciences USA 2010,
+107, 12766–12770.
+
+https://doi.org/10.1073/pnas.1005484107.
+
+- 
+Baumgratz et al. [2014]
+
+Baumgratz, T.; Cramer, M.; Plenio, M.B.
+
+Quantifying coherence.
+
+Physical Review Letters 2014, 113, 140401.
+
+https://doi.org/10.1103/PhysRevLett.113.140401.
+
+- 
+Streltsov et al. [2017]
+
+Streltsov, A.; Adesso, G.; Plenio, M.B.
+
+Colloquium: Quantum coherence as a resource.
+
+Reviews of Modern Physics 2017, 89, 041003.
+
+https://doi.org/10.1103/RevModPhys.89.041003.
+
+- 
+Yao et al. [2015]
+
+Yao, Y.; Xiao, X.; Ge, L.; Sun, C.P.
+
+Quantum coherence in multipartite systems.
+
+Physical Review A 2015, 92, 022112.
+
+https://doi.org/10.1103/PhysRevA.92.022112.
+
+- 
+Tan et al. [2016]
+
+Tan, K.C.; Kwon, H.; Park, C.Y.; Jeong, H.
+
+Unified view of quantum correlations and quantum coherence.
+
+Physical Review A 2016, 94, 022329.
+
+https://doi.org/10.1103/PhysRevA.94.022329.
+
+- 
+Plenio [2005]
+
+Plenio, M.B.
+
+Logarithmic Negativity.
+
+Physical Review Letters 2005, 95, 090503.
+
+https://doi.org/10.1103/PhysRevLett.95.090503.
+
+- 
+Vidal and Werner [2002]
+
+Vidal, G.; Werner, R.F.
+
+Computable measure of entanglement.
+
+Physical Review A 2002, 65, 032314.
+
+https://doi.org/10.1103/PhysRevA.65.032314.
+
+- 
+Ishizaki and Fleming [2009]
+
+Ishizaki, A.; Fleming, G. R.
+
+Theoretical examination of quantum coherence in a photosynthetic system at physiological temperature.
+
+Proceedings of the National Academy of Sciences USA 2009, 106, 17255–17260.
+
+https://doi.org/10.1073/pnas.0908989106.
+
+- 
+Chin et al. [2010]
+
+Chin, A. W.; Datta, A.; Caruso, F.; Huelga, S. F.; Plenio, M. B.
+
+Noise-assisted energy transfer in quantum networks and light-harvesting complexes.
+
+New Journal of Physics 2010, 12, 065002.
+
+https://doi.org/10.1088/1367-2630/12/6/065002.
+
+- 
+Scholes et al. [2017]
+
+Scholes, G. D.; Fleming, G. R.; Chen, L. X.; Aspuru-Guzik, A.; Buchleitner, A.; Coker, D. F.; Engel, G. S.; van Grondelle, R.; Ishizaki, A.; Jonas, D. M.; et al.
+
+Using coherence to enhance function in chemical and biophysical systems.
+
+Nature 2017, 543, 647–656.
+
+https://doi.org/10.1038/nature21425.
+
+- 
+Kapitein and Hoogenraad [2015]
+
+Kapitein, L. C.; Hoogenraad, C. C.
+
+Building the neuronal microtubule cytoskeleton.
+
+Neuron 2015, 87, 492–506.
+
+https://doi.org/10.1016/j.neuron.2015.05.046.
+
+- 
+Janke and Magiera [2020]
+
+Janke, C.; Magiera, M. M.
+
+The tubulin code and its role in controlling microtubule properties and function.
+
+Nature Reviews Molecular Cell Biology 2020, 21, 307–326.
+
+https://doi.org/10.1038/s41580-020-0214-3.
+
+- 
+Johansson et al. [2012]
+
+Johansson, J.R.; Nation, P.D.; Nori, F.
+
+QuTiP: An open-source Python framework for the dynamics of open
+quantum systems.
+
+Computer physics communications 2012, 183, 1760–1772.
+
+https://doi.org/10.1016/j.cpc.2012.02.021.
+
+- 
+DeLano [2002]
+
+DeLano, W. L.
+
+The PyMOL Molecular Graphics System.
+
+DeLano Scientific, San Carlos, CA, 2002.
+
+http://www.pymol.org.
+
+- 
+Ehrenshaft et al. [2015]
+
+Ehrenshaft, M.; Deterding, L. J.; Mason, R. P.
+
+Tripping up Trp: Modification of protein tryptophan residues by reactive oxygen species.
+
+Free Radical Biology and Medicine 2015, 89, 220–228.
+
+https://doi.org/10.1016/j.freeradbiomed.2015.08.003.
+
+- 
+Schöneich [2018]
+
+Schöneich, C.
+
+Novel chemical degradation pathways of proteins mediated by tryptophan oxidation: tryptophan side chain fragmentation.
+
+Journal of Pharmacy and Pharmacology 2018, 70, 655–665.
+
+https://doi.org/10.1111/jphp.12688.
+
+- 
+Goodson and Jonasson [2018]
+
+Goodson, H. V.; Jonasson, E. M.
+
+Microtubules and microtubule-associated proteins.
+
+Cold Spring Harbor Perspectives in Biology 2018, 10, a022608.
+
+https://doi.org/10.1101/cshperspect.a022608.
+
+- 
+Del Giudice et al. [1985]
+
+Del Giudice, E.; Doglia, S.; Milani, M.; Vitiello, G.
+
+A quantum field theoretical approach to the collective behavior of biological systems.
+
+Nuclear Physics B 1985, 251, 375–400.
+
+https://doi.org/10.1016/0550-3213(85)90267-6.
+
+- 
+Del Giudice et al. [1986]
+
+Del Giudice, E.; Doglia, S.; Milani, M.; Vitiello, G.
+
+Electromagnetic field and spontaneous symmetry breaking in biological matter.
+
+Nuclear Physics B 1986, 275, 185–199.
+
+https://doi.org/10.1016/0550-3213(86)90595-X.
+
+- 
+Breuer et al. [2009]
+
+Breuer, H.P.; Laine, E.M.; Piilo, J.
+
+Measure for the Degree of Non-Markovian Behavior of Quantum Processes
+in Open Systems.
+
+Phys. Rev. Lett. 2009, 103, 210401.
+
+https://doi.org/10.1103/PhysRevLett.103.210401.
+
+- 
+Rivas et al. [2010]
+
+Rivas, A.; Huelga, S.F.; Plenio, M.B.
+
+Entanglement and Non-Markovianity of Quantum Evolutions.
+
+Phys. Rev. Lett. 2010, 105, 050403.
+
+https://doi.org/10.1103/PhysRevLett.105.050403.
+
+- 
+Ho [2013]
+
+Ho, M.-W.
+
+Circular thermodynamics of organisms and sustainable systems.
+
+Systems 2013, 1, 30–49.
+
+https://doi.org/10.3390/systems1030030.
+
+- 
+Li [1992]
+
+Li, K.
+
+Coherence in physics and biology.
+
+In: Popp, F., et al. (Eds.), Recent Advances in Biophoton Research and Its Applications;
+World Scientific: Singapore, 1992; pp. 113–155.
+
+https://doi.org/10.1142/9789814439671_0004.
+
+- 
+Hirokawa et al. [2010]
+
+Hirokawa, N.; Niwa, S.; Tanaka, Y.
+
+Molecular motors in neurons: transport mechanisms and roles in brain function, development, and disease.
+
+Neuron 2010, 68, 610–638.
+
+https://doi.org/10.1016/j.neuron.2010.09.039.
+
+- 
+Case et al. [2005]
+
+Case, D. A.; Cheatham III, T. E.; Darden, T.; Gohlke, H.; Luo, R.; Merz Jr., K. M.; Onufriev, A.; Simmerling, C.; Wang, B.; Woods, R. J.
+
+The Amber biomolecular simulation programs.
+
+J. Comput. Chem. 26, 1668–1688 (2005).
+
+https://doi.org/10.1002/jcc.20290.
+
+- 
+Waterhouse et al. [2018]
+
+Waterhouse, A. et al.
+
+SWISS-MODEL: homology modelling of protein structures and complexes.
+
+Nucleic Acids Res. 46, W296–W303 (2018).
+
+https://doi.org/10.1093/nar/gky427.
+
+- 
+Anandakrishnan et al. [2012]
+
+Anandakrishnan, R.; Aguilar, B.; Onufriev, A. V.
+
+H++ 3.0: automating pKa prediction and the preparation of biomolecular structures for atomistic molecular modeling and simulations.
+
+Nucleic Acids Res. 40, W537–W541 (2012).
+
+https://doi.org/10.1093/nar/gks375.
+
+- 
+Olsson et al. [2011]
+
+Olsson, M. H. M.; Søndergaard, C. R.; Rostkowski, M.; Jensen, J. H.
+
+PROPKA3: consistent treatment of internal and surface residues in empirical pKa predictions.
+
+J. Chem. Theory Comput. 7, 525–537 (2011).
+
+https://doi.org/10.1021/ct100578z.
+
+- 
+Maier et al. [2015]
+
+Maier, J. A.; Martinez, C.; Kasavajhala, K.; Wickstrom, L.; Hauser, K. E.; Simmerling, C.
+
+ff14SB: Improving the accuracy of protein side chain and backbone parameters from ff99SB.
+
+J. Chem. Theory Comput. 11, 3696–3713 (2015).
+
+https://doi.org/10.1021/acs.jctc.5b00255.
+
+- 
+Roe and Cheatham III [2013]
+
+Roe, D. R.; Cheatham III, T. E.
+
+PTRAJ and CPPTRAJ: Software for processing and analysis of molecular dynamics trajectory data.
+
+J. Chem. Theory Comput. 9, 3084–3095 (2013).
+
+https://doi.org/10.1021/ct400341p.
+
+- 
+Wiseman and Milburn [2009]
+
+Wiseman, H. M.; Milburn, G. J.
+
+Quantum Measurement and Control.
+
+Cambridge University Press 2009.
+
+https://doi.org/10.1017/CBO9780511813948.
+
+- 
+Carmichael [1993]
+
+Carmichael, H. J.
+
+An Open Systems Approach to Quantum Optics.
+
+Springer 1993.
+
+https://doi.org/10.1007/978-3-540-47620-7.
+
+- 
+Benabdallah et al. [2021]
+
+Benabdallah, F.; Zad, H.A.; Daoud, M.; Ananikian, N.
+
+Dynamics of quantum correlations in a qubit-qutrit spin system under
+random telegraph noise.
+
+Physica Scripta 2021, 96, 125116.
+
+https://doi.org/10.1088/1402-4896/ac3c5c.
+
+◄
+ [img: ar5iv homepage] 
+ Feeling
+lucky?
+ 
+ Conversion
+report
+ Report
+an issue
+ View original
+on arXiv►
+
+Copyright
+Privacy Policy
+
+Generated on Thu Mar 5 22:56:25 2026 by LaTeXML [img: Mascot Sammy]
