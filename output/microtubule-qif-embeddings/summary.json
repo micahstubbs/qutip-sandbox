@@ -1,0 +1,295 @@
+{
+  "paper": "arXiv:2602.02868v1",
+  "note": "Embeddings and backflow at up to 3 tubulins (24 sites); the paper's full 13-tubulin spiral (104 sites) and larger assemblies required HPC and are out of workstation reach.",
+  "embeddings_fig8": {
+    "single": {
+      "n_sites": 8,
+      "preparations": {
+        "coherent": {
+          "top_pairs": [
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              6
+            ],
+            [
+              2,
+              8
+            ]
+          ],
+          "max_pair_l1": 0.37992070723102395
+        },
+        "mixed": {
+          "top_pairs": [
+            [
+              4,
+              7
+            ],
+            [
+              3,
+              7
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              3,
+              4
+            ]
+          ],
+          "max_pair_l1": 0.09315431263984425
+        },
+        "superradiant": {
+          "top_pairs": [
+            [
+              4,
+              7
+            ],
+            [
+              3,
+              7
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "max_pair_l1": 0.9763644237771726
+        },
+        "subradiant": {
+          "top_pairs": [
+            [
+              4,
+              7
+            ],
+            [
+              3,
+              7
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              6,
+              7
+            ]
+          ],
+          "max_pair_l1": 0.8960527082491889
+        }
+      }
+    },
+    "two-tubulin": {
+      "n_sites": 16,
+      "preparations": {
+        "coherent": {
+          "top_pairs": [
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              6
+            ],
+            [
+              2,
+              8
+            ]
+          ],
+          "max_pair_l1": 0.2542319666610597
+        },
+        "mixed": {
+          "top_pairs": [
+            [
+              4,
+              7
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              3,
+              7
+            ],
+            [
+              3,
+              4
+            ]
+          ],
+          "max_pair_l1": 0.09061535858516583
+        },
+        "superradiant": {
+          "top_pairs": [
+            [
+              4,
+              7
+            ],
+            [
+              3,
+              7
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "max_pair_l1": 0.9763644237771739
+        },
+        "subradiant": {
+          "top_pairs": [
+            [
+              4,
+              7
+            ],
+            [
+              3,
+              7
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              6,
+              7
+            ]
+          ],
+          "max_pair_l1": 0.8960527082491896
+        }
+      }
+    },
+    "three-tubulin": {
+      "n_sites": 24,
+      "preparations": {
+        "coherent": {
+          "top_pairs": [
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              6
+            ],
+            [
+              2,
+              8
+            ]
+          ],
+          "max_pair_l1": 0.2500000000000004
+        },
+        "mixed": {
+          "top_pairs": [
+            [
+              4,
+              7
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              6,
+              8
+            ],
+            [
+              1,
+              5
+            ]
+          ],
+          "max_pair_l1": 0.07882420384504202
+        },
+        "superradiant": {
+          "top_pairs": [
+            [
+              4,
+              7
+            ],
+            [
+              3,
+              7
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "max_pair_l1": 0.9763644237771729
+        },
+        "subradiant": {
+          "top_pairs": [
+            [
+              4,
+              7
+            ],
+            [
+              3,
+              7
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              6,
+              7
+            ]
+          ],
+          "max_pair_l1": 0.8960527082491881
+        }
+      }
+    }
+  },
+  "backflow_fig9": {
+    "n_sites": 24,
+    "n_tubulins": 3,
+    "neighbors": {
+      "T1-T2": {
+        "population": {
+          "non_markovianity": 0.9096794601618143
+        },
+        "phase": {
+          "non_markovianity": 1.917388515230853
+        }
+      },
+      "T1-T3": {
+        "population": {
+          "non_markovianity": 0.944603719216222
+        },
+        "phase": {
+          "non_markovianity": 0.5738207708081623
+        }
+      }
+    }
+  }
+}
