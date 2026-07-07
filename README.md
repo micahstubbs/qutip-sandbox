@@ -43,6 +43,40 @@ Outputs in `output/`:
 - `hello-rabi-oscillations.png` — ⟨σz⟩(t): ideal vs analytic vs damped
 - `hello-bloch-sphere.png` — the damped trajectory spiraling into the Bloch sphere
 
+### `scripts/run_microtubule_qif.py` — arXiv:2602.02868v1 implementation
+
+Implements the published model from Gassab, Pusuluk & Craddock, *Quantum Information Flow in Microtubule Tryptophan Networks*:
+
+- extracts the eight Trp chromophores from `data/1JFF.pdb`
+- uses the CD2/CE2 midpoint and 46.2 degree in-plane Trp 1La transition-dipole convention used by the cited microtubule construction work
+- builds the coherent dipole coupling matrix `Delta` and collective decay matrix `G` from Eqs. 9-10
+- diagonalizes `H_eff = H0 + Delta - iG/2`
+- evolves superradiant, subradiant, coherent, mixed, and localized preparations with a trace-preserving Lindblad equation in the single-excitation-plus-ground space
+- computes site populations, pair `L1` coherence, correlated coherence helpers, logarithmic negativity, mutual information helpers, and trace-distance backflow helpers
+
+```bash
+.venv/bin/python scripts/run_microtubule_qif.py
+.venv/bin/python -m pytest -q tests/test_model_measures.py
+```
+
+Outputs in `output/microtubule-qif/`:
+
+- `sites.csv`, `matrices.npz`, `modes.csv`, `summary.json`
+- `spectrum.png`
+- `dynamics-{superradiant,subradiant,coherent,mixed}.png`
+- `localized-injections.png`
+
+Larger ordered assemblies can be built for spectral analysis:
+
+```bash
+.venv/bin/python scripts/run_microtubule_qif.py --assembly one-spiral --skip-dynamics
+.venv/bin/python scripts/run_microtubule_qif.py --static-disorder-cm 200 --skip-dynamics
+```
+
+The paper's exact molecular-dynamics structural-disorder ensemble and author code are not bundled with the arXiv source, so this repo implements the ordered 1JFF reconstruction plus parameterized static disorder and random positional/dipole jitter. See `docs/paper-2602.02868/implementation-notes.md` and `docs/paper-2602.02868/reproduction-gap-report.md`.
+
+The static walkthrough UI is `docs/paper-2602.02868/ui/index.html`; it can be opened directly in a browser and uses the generated plots in `output/microtubule-qif/`.
+
 ## Environment
 
-Verified with QuTiP 5.3.0, NumPy 2.5.1, SciPy 1.18.0, matplotlib 3.11.0 on Python 3.13.2 (macOS arm64, Accelerate BLAS).
+Verified with QuTiP 5.3.0, NumPy 1.26.4, SciPy 1.17.1, matplotlib 3.11.0 on Python 3.13.2 (macOS arm64, Accelerate BLAS).

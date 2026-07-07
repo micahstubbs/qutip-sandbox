@@ -7,9 +7,10 @@ dipole orientations.
 
 All lengths are in nanometres; the reference wavelength is lambda0 = 280 nm
 (A280 tryptophan band), so k0 = 2*pi/lambda0 and alpha_nm = k0 * r_nm.
-Rates are expressed in units of the single-site rate gamma (i.e. gamma = 1),
-so Delta and G are dimensionless multiples of gamma. Physical values are
-recovered by scaling with the true single-site radiative rate.
+Rates can be dimensionless multiples of the single-site rate gamma or physical
+angular rates in ps^-1.  The paper's lifetime conversion uses
+tau = 1 / (2*pi*c*Gamma_cm), so the helpers below convert spectroscopic
+cm^-1 rates to angular ps^-1 for QuTiP time axes measured in picoseconds.
 """
 
 from __future__ import annotations
@@ -18,6 +19,27 @@ import numpy as np
 
 LAMBDA0_NM = 280.0
 K0 = 2.0 * np.pi / LAMBDA0_NM   # 1/nm
+LIGHT_SPEED_CM_S = 2.99792458e10
+PS_PER_S = 1.0e12
+
+# Used in Patwa/Babcock/Kurian tryptophan-network work and inherited by the
+# present paper's 280 nm Trp radiative model.
+DEFAULT_TRP_GAMMA_CM = 2.73e-3
+
+
+def cm_to_rad_per_ps(wavenumber_cm: float | np.ndarray) -> float | np.ndarray:
+    """Convert a spectroscopic rate in cm^-1 to angular ps^-1."""
+    return 2.0 * np.pi * LIGHT_SPEED_CM_S * np.asarray(wavenumber_cm) / PS_PER_S
+
+
+def rad_per_ps_to_cm(rate_rad_per_ps: float | np.ndarray) -> float | np.ndarray:
+    """Convert an angular ps^-1 rate back to cm^-1."""
+    return np.asarray(rate_rad_per_ps) * PS_PER_S / (2.0 * np.pi * LIGHT_SPEED_CM_S)
+
+
+def trp_gamma_rad_per_ps(gamma_cm: float = DEFAULT_TRP_GAMMA_CM) -> float:
+    """Default single-Trp radiative rate in angular ps^-1."""
+    return float(cm_to_rad_per_ps(gamma_cm))
 
 
 def _f_coeffs(alpha: np.ndarray):

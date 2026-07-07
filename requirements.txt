@@ -6,3 +6,4 @@ matplotlib>=3.11
 # (highest quality, MathML input) is reached via `npx speech-rule-engine` and
 # needs Node, not pip.
 pylatexenc>=2.10
+pytest>=8

@@ -8,8 +8,8 @@ Implements the site geometry of
 Two responsibilities:
 
 1. Extract the eight tryptophan sites of a tubulin dimer from PDB 1JFF — each
-   site's *position* (indole ring centroid) and *transition-dipole orientation*
-   (the ¹La moment, taken in the indole plane).
+   site's *position* (CD2/CE2 midpoint) and *transition-dipole orientation* (the
+   ¹La moment, taken in the indole plane).
 
 2. Build ordered microtubule assemblies (dimers, spirals, filaments) by the
    rigid-body construction of Appendix A.
@@ -17,21 +17,11 @@ Two responsibilities:
 Dipole-orientation convention
 -----------------------------
 The paper takes site positions and dipole orientations "from structural data"
-and defers the exact extraction to the code of Patwa et al. [11]. That code is
-not bundled here, so we use an explicit, documented convention for the Trp ¹La
-transition dipole:
-
-  * position  = centroid of the nine indole-ring atoms
-                (CG, CD1, CD2, NE1, CE2, CE3, CZ2, CZ3, CH2)
-  * ring plane = best-fit plane of those atoms (SVD; normal = smallest
-                 singular vector)
-  * in-plane long axis â = projection of (CG -> CH2) onto the plane
-  * ¹La dipole = â rotated in-plane about the plane normal by ``la_angle_deg``
-                 (default 42°, the Callis ¹La value)
-
-``la_angle_deg`` is a free parameter so the convention can be matched to a
-specific reference; the collective physics (super/subradiant splitting) is
-robust to its precise value, which we verify in the tests.
+and cites the microtubule construction code used by Patwa et al.  Their Methods
+define the Trp chromophore position as the midpoint of the CD2 and CE2 atoms,
+and the 1La transition dipole as an in-plane vector pointing ``la_angle_deg``
+above the axis from that midpoint to CD1, toward NE1.  The default angle is
+46.2 degrees, matching that convention.
 """
 
 from __future__ import annotations
@@ -107,11 +97,11 @@ def _best_fit_plane_normal(points: np.ndarray) -> np.ndarray:
 
 
 def load_tubulin_dipoles(pdb_path: Path | None = None,
-                         la_angle_deg: float = 42.0) -> list[Dipole]:
+                         la_angle_deg: float = 46.2) -> list[Dipole]:
     """Load the eight Trp dipoles of the 1JFF tubulin dimer.
 
     Positions are converted to nanometres (PDB is in angstrom). Dipoles are
-    unit ¹La transition moments per the convention documented in the module
+    unit 1La transition moments per the convention documented in the module
     docstring.
     """
     pdb_path = Path(pdb_path) if pdb_path else DATA_DIR / "1JFF.pdb"
@@ -121,27 +111,29 @@ def load_tubulin_dipoles(pdb_path: Path | None = None,
     dipoles = []
     for idx, (chain, resseq) in enumerate(TRP_SITES, start=1):
         ring = np.array([atoms[(chain, resseq, a)] for a in INDOLE_ATOMS])
-        centroid = ring.mean(axis=0)
+        cd2 = atoms[(chain, resseq, "CD2")]
+        ce2 = atoms[(chain, resseq, "CE2")]
+        cd1 = atoms[(chain, resseq, "CD1")]
+        ne1 = atoms[(chain, resseq, "NE1")]
+
+        midpoint = 0.5 * (cd2 + ce2)
+        axis = cd1 - midpoint
+        axis /= np.linalg.norm(axis)
+
+        # Rotate within the indole plane toward NE1 by la_angle.  The NE1
+        # projection defines the positive in-plane perpendicular direction.
         normal = _best_fit_plane_normal(ring)
+        toward_ne1 = ne1 - midpoint
+        toward_ne1 -= np.dot(toward_ne1, axis) * axis
+        toward_ne1 -= np.dot(toward_ne1, normal) * normal
+        toward_ne1 /= np.linalg.norm(toward_ne1)
 
-        cg = atoms[(chain, resseq, "CG")]
-        ch2 = atoms[(chain, resseq, "CH2")]
-        long_axis = ch2 - cg
-        # project long axis into the ring plane
-        long_axis = long_axis - np.dot(long_axis, normal) * normal
-        long_axis /= np.linalg.norm(long_axis)
-
-        # rotate the in-plane long axis by la_angle about the plane normal
-        # (Rodrigues rotation)
-        c, s = np.cos(la_angle), np.sin(la_angle)
-        mu = (long_axis * c
-              + np.cross(normal, long_axis) * s
-              + normal * np.dot(normal, long_axis) * (1 - c))
+        mu = np.cos(la_angle) * axis + np.sin(la_angle) * toward_ne1
         mu /= np.linalg.norm(mu)
 
         dipoles.append(Dipole(
             name=f"Trp{idx}",
-            position=centroid / 10.0,   # angstrom -> nm
+            position=midpoint / 10.0,   # angstrom -> nm
             mu=mu,
             residue=(chain, resseq),
         ))
@@ -166,12 +158,36 @@ def _rot(axis: np.ndarray, angle_deg: float) -> np.ndarray:
     ])
 
 
-def build_dimer(la_angle_deg: float = 42.0,
+def build_dimer(la_angle_deg: float = 46.2,
                 pdb_path: Path | None = None) -> list[Dipole]:
     """A single tubulin dimer: the eight Trp dipoles, centred at the origin."""
+    dips, _ = _centered_dimer_and_beta346_cd2(la_angle_deg, pdb_path)
+    return dips
+
+
+def _centered_dimer_and_beta346_cd2(la_angle_deg: float = 46.2,
+                                    pdb_path: Path | None = None):
+    """Return centered dimer dipoles and the centered beta Trp346 CD2 pivot."""
+    pdb_path = Path(pdb_path) if pdb_path else DATA_DIR / "1JFF.pdb"
     dips = load_tubulin_dipoles(pdb_path, la_angle_deg)
     centre = np.mean([d.position for d in dips], axis=0)
-    return [d.transformed(np.eye(3), -centre) for d in dips]
+    atoms = _parse_pdb_atoms(pdb_path)
+    beta346_cd2 = atoms[("B", 346, "CD2")] / 10.0 - centre
+    return [d.transformed(np.eye(3), -centre) for d in dips], beta346_cd2
+
+
+def _transform_about_pivot(dipoles: list[Dipole], R: np.ndarray,
+                           pivot: np.ndarray) -> list[Dipole]:
+    """Rotate dipoles by R around an axis passing through ``pivot``."""
+    out: list[Dipole] = []
+    for d in dipoles:
+        out.append(Dipole(
+            name=d.name,
+            position=pivot + R @ (d.position - pivot),
+            mu=R @ d.mu,
+            residue=d.residue,
+        ))
+    return out
 
 
 # Rigid-motion parameters from Appendix A (nanometres, degrees).
@@ -186,28 +202,30 @@ DIMERS_PER_SPIRAL = 13
 
 
 def build_spiral(n_dimers: int = DIMERS_PER_SPIRAL,
-                 la_angle_deg: float = 42.0,
+                 la_angle_deg: float = 46.2,
                  pdb_path: Path | None = None) -> list[Dipole]:
     """One circumferential turn: ``n_dimers`` dimers around the cylinder.
 
-    Follows the left-handed spiral construction of Appendix A: each successive
-    dimer is the base dimer rotated about the longitudinal axis and tilted,
-    translated radially, then placed at its position in the turn by an
-    additional rotation about x and a small longitudinal step.
+    Follows the left-handed spiral construction of Appendix A: the centered
+    dimer is first rotated about its longitudinal axis, then tilted about an
+    x-parallel axis passing through beta-tubulin Trp346 CD2, translated
+    radially, and copied around the turn by an additional rotation about x and
+    a small longitudinal step.
     """
-    base = build_dimer(la_angle_deg, pdb_path)
-    tilt_axis = _LONG_AXIS  # about x, per "rotation about axis through Trp346"
+    base, beta346_cd2 = _centered_dimer_and_beta346_cd2(la_angle_deg, pdb_path)
     R_base = _rot(_LONG_AXIS, _SPIRAL_ROT_LONG)
-    R_tilt = _rot(tilt_axis, _SPIRAL_ROT_TILT)
-    R_dimer = R_tilt @ R_base
+    base = [d.transformed(R_base, np.zeros(3)) for d in base]
+    beta346_cd2 = R_base @ beta346_cd2
+
+    R_tilt = _rot(_LONG_AXIS, _SPIRAL_ROT_TILT)
+    base = _transform_about_pivot(base, R_tilt, beta346_cd2)
 
     sites: list[Dipole] = []
     for k in range(n_dimers):
         R_turn = _rot(_LONG_AXIS, _TURN_ROT_X * k)
-        R = R_turn @ R_dimer
         t = R_turn @ _SPIRAL_TRANS + _TURN_TRANS_X * k
         for d in base:
-            moved = d.transformed(R, t)
+            moved = d.transformed(R_turn, t)
             moved.name = f"S0-D{k}-{d.name}"
             sites.append(moved)
     return sites
@@ -215,7 +233,7 @@ def build_spiral(n_dimers: int = DIMERS_PER_SPIRAL,
 
 def build_segment(n_spirals: int = 1,
                   dimers_per_spiral: int = DIMERS_PER_SPIRAL,
-                  la_angle_deg: float = 42.0,
+                  la_angle_deg: float = 46.2,
                   pdb_path: Path | None = None) -> list[Dipole]:
     """A microtubule segment of ``n_spirals`` stacked circumferential turns."""
     spiral = build_spiral(dimers_per_spiral, la_angle_deg, pdb_path)
