@@ -86,8 +86,9 @@
         <div class="toolbar">
           <div class="prep-tabs" id="prep-tabs"></div>
           <div class="transport">
-            <button id="play" class="chip play">▶ play</button>
-            <input id="scrub" type="range" min="0" max="89" value="0" step="1">
+            <button id="play" class="chip play" aria-label="Play or pause the dynamics timeline">▶ play</button>
+            <input id="scrub" type="range" min="0" max="89" value="0" step="1"
+                   aria-label="Scrub the dynamics timeline">
             <span class="mono" id="tstamp">t = 0 ps</span>
           </div>
         </div>

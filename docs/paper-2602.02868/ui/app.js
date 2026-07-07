@@ -262,8 +262,10 @@ let dyn = { prep: "superradiant", t: 0, playing: false, timer: null };
 function buildDynamics() {
   const tabs = d3.select("#prep-tabs");
   Object.keys(DATA.dynamics).forEach((k, i) => {
+    // the localized preparation is injection on Trp1 only (site 0)
+    const label = k === "localized" ? "localized (Trp1)" : k;
     tabs.append("button").attr("class", "chip" + (i === 0 ? " is-on" : ""))
-      .attr("data-prep", k).text(k).on("click", () => setPrep(k));
+      .attr("data-prep", k).text(label).on("click", () => setPrep(k));
   });
   document.getElementById("scrub").addEventListener("input", (e) => {
     dyn.t = +e.target.value; stopPlay(); renderDyn();
@@ -276,7 +278,9 @@ function setPrep(k) {
   d3.selectAll("#prep-tabs .chip").classed("is-on", function () {
     return this.getAttribute("data-prep") === k;
   });
-  document.getElementById("scrub").value = 0;
+  const scrub = document.getElementById("scrub");
+  scrub.max = DATA.dynamics[k].times_ps.length - 1;   // stay in sync with SAMPLES
+  scrub.value = 0;
   renderDyn();
 }
 function togglePlay() { dyn.playing ? stopPlay() : startPlay(); }
@@ -341,37 +345,44 @@ function linesChart(sel, xs, series, labels, colors, cursor, title, legend) {
    05 · EMBEDDINGS (D3 small multiples)
    ============================================================ */
 function buildEmbeddings() {
-  const emb = DATA.embeddings && DATA.embeddings.embeddings_fig8;
+  const emb = DATA.embeddings;
   const grid = d3.select("#embed-grid");
-  if (!emb) { grid.append("p").attr("class", "legend-txt").text("embeddings data unavailable"); return; }
-  const rows = ["single", "two-tubulin", "three-tubulin"];
+  if (!emb || !emb.rows) {
+    grid.append("p").attr("class", "legend-txt").text("embeddings data unavailable");
+    return;
+  }
   const cols = ["coherent", "mixed", "superradiant", "subradiant"];
-  // header row
-  cols.forEach(c => grid.append("div").style("grid-column", "auto")
+  const times = emb.times_ps;
+  // header row of preparation names
+  cols.forEach(c => grid.append("div")
     .html(`<div class="legend-txt" style="text-align:center;padding:4px 0;color:${DARK}">${c}</div>`));
-  rows.forEach(rk => cols.forEach(ck => {
+  emb.rows.forEach(row => cols.forEach(ck => {
     const cell = grid.append("div");
-    const info = emb[rk] && emb[rk].preparations[ck];
-    const label = `${rk.replace("-tubulin", "")} · ${info ? info.n_sites || (emb[rk].n_sites) : ""}`;
-    const holder = cell.append("div").attr("id", `emb-${rk}-${ck}`).attr("class", "plot");
-    embSpark(`#emb-${rk}-${ck}`, info, `${rk.split("-")[0]}`);
+    const info = row.preparations[ck];
+    cell.append("div").attr("id", `emb-${row.embedding}-${ck}`).attr("class", "plot");
+    embSpark(`#emb-${row.embedding}-${ck}`, times, info, `${row.embedding.split("-")[0]} · ${row.n_sites}`);
   }));
 }
-function embSpark(sel, info, tag) {
-  const { g, iw, ih } = svgFrame(sel, 220, 130, { l: 30, r: 6, t: 16, b: 18 });
-  g.append("text").attr("class", "legend-txt").attr("x", 0).attr("y", -4)
-    .text(info ? `${tag} · max L₁ ${info.max_pair_l1.toFixed(3)}` : tag);
-  if (!info) return;
-  // We only stored top-pairs + max; draw pair labels as bars of their max contribution proxy.
-  const pairs = info.top_pairs;
-  const x = d3.scaleBand().domain(pairs.map(p => `${p[0]},${p[1]}`)).range([0, iw]).padding(0.25);
-  const y = d3.scaleLinear().domain([0, info.max_pair_l1 * 1.1]).range([ih, 0]);
-  g.append("g").attr("class", "axis").attr("transform", `translate(0,${ih})`)
-    .call(d3.axisBottom(x).tickSize(0)).selectAll("text").style("font-size", "8px");
+function embSpark(sel, times, info, tag) {
+  const { g, iw, ih } = svgFrame(sel, 220, 130, { l: 26, r: 6, t: 15, b: 16 });
+  if (!info) { g.append("text").attr("class", "legend-txt").text(tag); return; }
+  // Real top-4 pair L1(t) series (Fig 8), not a summary scalar.
+  const series = transpose(info.series);           // [pair][t]
   const cols = [BRIGHT, DARK, "#f2c14e", "#c98bff"];
-  pairs.forEach((p, i) => g.append("rect").attr("x", x(`${p[0]},${p[1]}`))
-    .attr("y", y(info.max_pair_l1 * (1 - i * 0.18))).attr("width", x.bandwidth())
-    .attr("height", ih - y(info.max_pair_l1 * (1 - i * 0.18))).attr("fill", cols[i]).attr("opacity", 0.85));
+  const x = d3.scaleLinear().domain(d3.extent(times)).range([0, iw]);
+  const ymax = d3.max(series.flat()) || 0.01;
+  const y = d3.scaleLinear().domain([0, ymax * 1.08]).range([ih, 0]);
+  g.append("text").attr("class", "legend-txt").attr("x", 0).attr("y", -3)
+    .text(`${tag} · max ${ymax.toFixed(3)}`);
+  g.append("g").attr("class", "axis").call(d3.axisLeft(y).ticks(2)).selectAll("text").style("font-size", "7px");
+  const line = d3.line().x((_, i) => x(times[i])).y(v => y(v)).curve(d3.curveMonotoneX);
+  series.forEach((s, i) => g.append("path").datum(s).attr("fill", "none")
+    .attr("stroke", cols[i]).attr("stroke-width", 1.2).attr("opacity", 0.9).attr("d", line));
+  // pair labels
+  const lg = g.append("g").attr("transform", `translate(${iw - 2},0)`);
+  info.top_pairs.forEach((p, i) => lg.append("text").attr("class", "legend-txt")
+    .attr("x", 0).attr("y", 8 + i * 9).attr("text-anchor", "end")
+    .style("font-size", "7px").attr("fill", cols[i]).text(`${p[0]},${p[1]}`));
 }
 
 /* ============================================================
@@ -384,7 +395,8 @@ function buildBackflow() {
   const x = d3.scaleLinear().domain(d3.extent(xs)).range([0, iw]);
   const y = d3.scaleLinear().domain([0, 1.02]).range([ih, 0]);
   addAxes(g, x, y, iw, ih, "time (ps)", "trace distance  Dₖ(t)");
-  const palette = [BRIGHT, DARK];
+  const basePalette = [BRIGHT, DARK, "#f2c14e", "#c98bff", "#7fd48b", "#ff5d5d"];
+  const palette = bf.neighbors.map((_, k) => basePalette[k % basePalette.length]);
   const line = d3.line().x((_, i) => x(xs[i])).y(v => y(v)).curve(d3.curveMonotoneX);
   const legend = g.append("g").attr("transform", "translate(10,4)");
   bf.neighbors.forEach((nb, k) => {
@@ -412,6 +424,11 @@ function buildBackflow() {
    ============================================================ */
 function buildLifetimes() {
   const lt = DATA.lifetimes;
+  if (!lt || !lt.length) {
+    d3.select("#lifetime-plot").append("p").attr("class", "legend-txt")
+      .text("lifetime data unavailable — run scripts/run_lifetime_scaling.py");
+    return;
+  }
   const { g, iw, ih } = svgFrame("#lifetime-plot", 900, 460, { l: 70, r: 24, t: 24, b: 54 });
   const x = d3.scaleLog().domain([0.9, d3.max(lt, d => d.dimers) * 1.2]).range([0, iw]);
   const allT = lt.flatMap(d => [d.tau_super_ordered, d.tau_sub_ordered, d.tau_super_static,
@@ -427,11 +444,8 @@ function buildLifetimes() {
     ["tau_sub_jitter", "#2a9d3a", "2 3", "sub · jitter"],
     ["tau_super_jitter", "#7fd48b", "2 3", "super · jitter"],
   ];
-  const line = d3.line().x(d => x(d.dimers)).y(d => y(d[cfgKey])).curve(d3.curveMonotoneX);
-  let cfgKey;
   const legend = g.append("g").attr("transform", `translate(12,4)`);
   cfgs.forEach(([key, col, dash, label], i) => {
-    cfgKey = key;
     const pts = lt.filter(d => d[key] > 0);
     g.append("path").datum(pts).attr("fill", "none").attr("stroke", col)
       .attr("stroke-width", 1.8).attr("stroke-dasharray", dash === "-" ? null : dash)

@@ -132,6 +132,57 @@ def dynamics_block(net):
     return out
 
 
+def embeddings_block(tmax_ps=15000.0, samples=70):
+    """Real top-4 focal-tubulin L1(t) series across embeddings x preparations
+    (Fig 8), computed here so the UI shows measured curves, not a summary scalar.
+    """
+    focal = list(range(8))            # T1 = first tubulin
+    pairs = list(combinations(focal, 2))
+    preps = ["coherent", "mixed", "superradiant", "subradiant"]
+    times = np.linspace(0.0, tmax_ps, samples)
+    embeddings = [("single", 1), ("two-tubulin", 2), ("three-tubulin", 3)]
+    out = {"times_ps": [round(float(t), 1) for t in times], "rows": []}
+
+    def focal_prep(net, kind):
+        N, dim = net.N, net.N + 1
+        if kind == "coherent":
+            amp = np.zeros(N); amp[focal] = 1.0
+        elif kind == "mixed":
+            import qutip as qt
+            rho = np.zeros((dim, dim), dtype=complex)
+            for s in focal:
+                rho[s + 1, s + 1] = 1.0 / len(focal)
+            return qt.Qobj(rho)
+        else:  # super/subradiant excitonic eigenstate of the focal block
+            block = np.ix_(focal, focal)
+            _, V = np.linalg.eigh(net.Delta[block])
+            rates = np.array([np.real(V[:, j].conj() @ net.G[block] @ V[:, j])
+                              for j in range(len(focal))])
+            V_pick = V[:, np.argmax(rates) if kind == "superradiant"
+                       else np.argmin(rates)]
+            amp = np.zeros(N); amp[focal] = V_pick
+        import qutip as qt
+        vec = np.zeros(dim, dtype=complex); vec[1:] = amp
+        vec /= np.linalg.norm(vec)
+        return qt.ket2dm(qt.Qobj(vec.reshape(-1, 1)))
+
+    for label, n_dimers in embeddings:
+        net = md.build_physical_network(geo.build_spiral(n_dimers=n_dimers))
+        row = {"embedding": label, "n_sites": net.N, "preparations": {}}
+        for kind in preps:
+            res = md.evolve(net, focal_prep(net, kind), times)
+            l1 = np.array([[ms.pair_l1_coherence(s, i, j) for i, j in pairs]
+                           for s in res.states])
+            top = np.argsort(l1.mean(axis=0))[-4:][::-1]
+            row["preparations"][kind] = {
+                "top_pairs": [[pairs[t][0] + 1, pairs[t][1] + 1] for t in top],
+                "series": [[round(float(l1[r, t]), 4) for t in top]
+                           for r in range(len(times))],
+            }
+        out["rows"].append(row)
+    return out
+
+
 def backflow_block(n_tubulins=3, tmax_ps=8000.0, samples=100):
     """3-tubulin trace-distance backflow series for the interactive Fig 9 view."""
     import qutip as qt
@@ -175,11 +226,6 @@ def backflow_block(n_tubulins=3, tmax_ps=8000.0, samples=100):
             "n_sites": net.N, "neighbors": neighbors}
 
 
-def load_json(path):
-    p = ROOT / path
-    return json.loads(p.read_text()) if p.exists() else None
-
-
 def lifetimes_block():
     p = ROOT / "output" / "microtubule-qif-lifetimes" / "lifetimes.csv"
     if not p.exists():
@@ -208,7 +254,7 @@ def main() -> int:
         "couplings": couplings_block(net),
         "spectrum": spectrum_block(net),
         "dynamics": dynamics_block(net),
-        "embeddings": load_json("output/microtubule-qif-embeddings/summary.json"),
+        "embeddings": embeddings_block(),
         "backflow": backflow_block(),
         "lifetimes": lifetimes_block(),
     }

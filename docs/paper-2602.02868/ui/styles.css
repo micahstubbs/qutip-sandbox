@@ -147,3 +147,9 @@ body {
   .embed-grid { grid-template-columns: repeat(2, 1fr); }
   .mast-readout { display: none; }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .scanline { display: none; }
+  .panel { animation: none; }
+  * { transition-duration: 0.01ms !important; }
+}
