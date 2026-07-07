@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Microtubule QIF · Interactive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="scanline" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="masthead">
+    <div class="mast-left">
+      <span class="sigil" aria-hidden="true">λ</span>
+      <div class="mast-title">
+        <h1>QUANTUM INFORMATION FLOW</h1>
+        <p>Microtubule tryptophan networks · <span class="mono">arXiv:2602.02868v1</span> · interactive reconstruction</p>
+      </div>
+    </div>
+    <div class="mast-readout mono" id="mast-readout">
+      <span data-k="λ₀">280 nm</span>
+      <span data-k="sites">8</span>
+      <span data-k="Γ_max">2.04γ</span>
+      <span data-k="Γ_min">0.108γ</span>
+    </div>
+  </header>
+
+  <nav class="stepbar" id="stepbar" aria-label="Implementation steps"></nav>
+
+  <main class="stage">
+    <!-- 1. GEOMETRY (Three.js) -->
+    <section class="panel" data-step="geometry">
+      <div class="panel-head">
+        <h2><span class="idx">01</span> Geometry — Trp sites &amp; dipoles</h2>
+        <p>Eight tryptophan chromophores extracted from PDB 1JFF, each an indole-ring
+           centroid with its ¹Lₐ transition dipole. Drag to orbit · scroll to zoom.</p>
+      </div>
+      <div class="panel-body geo-body">
+        <div id="geo-canvas" class="viewport"></div>
+        <aside class="geo-side">
+          <div class="toggle-row">
+            <button id="geo-mode-dimer" class="chip is-on">Dimer · 8</button>
+            <button id="geo-mode-spiral" class="chip">One spiral · 104</button>
+            <button id="geo-dipoles" class="chip is-on">Dipoles</button>
+          </div>
+          <ul class="site-legend mono" id="site-legend"></ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 2. COUPLINGS (D3 heatmaps) -->
+    <section class="panel" data-step="couplings">
+      <div class="panel-head">
+        <h2><span class="idx">02</span> Couplings — Δ and G matrices</h2>
+        <p>Coherent dipole coupling Δ (Eq. 9) and collective radiative decay G
+           (Eq. 10), in units of the single-site rate γ. Hover a cell for the value.</p>
+      </div>
+      <div class="panel-body matrices">
+        <figure><figcaption>Δ<sub>nm</sub> / γ — coherent coupling</figcaption><div id="mat-delta" class="heat"></div></figure>
+        <figure><figcaption>G<sub>nm</sub> / γ — collective decay</figcaption><div id="mat-g" class="heat"></div></figure>
+      </div>
+    </section>
+
+    <!-- 3. SPECTRUM (D3) -->
+    <section class="panel" data-step="spectrum">
+      <div class="panel-head">
+        <h2><span class="idx">03</span> Spectrum — bright &amp; dark modes</h2>
+        <p>Excitonic eigenmodes classified by collective radiative rate Γ<sub>j</sub>/γ.
+           Above the dashed line are superradiant (bright); below, subradiant (dark).</p>
+      </div>
+      <div class="panel-body"><div id="spectrum-plot" class="plot"></div></div>
+    </section>
+
+    <!-- 4. DYNAMICS (D3 + scrubber) -->
+    <section class="panel" data-step="dynamics">
+      <div class="panel-head">
+        <h2><span class="idx">04</span> Dynamics — Lindblad evolution</h2>
+        <p>Trace-preserving evolution of the five preparations. Scrub or play the
+           timeline; watch populations, pairwise coherence and entanglement flow.</p>
+      </div>
+      <div class="panel-body">
+        <div class="toolbar">
+          <div class="prep-tabs" id="prep-tabs"></div>
+          <div class="transport">
+            <button id="play" class="chip play" aria-label="Play or pause the dynamics timeline">▶ play</button>
+            <input id="scrub" type="range" min="0" max="89" value="0" step="1"
+                   aria-label="Scrub the dynamics timeline">
+            <span class="mono" id="tstamp">t = 0 ps</span>
+          </div>
+        </div>
+        <div class="dyn-grid">
+          <div id="dyn-pop" class="plot"></div>
+          <div id="dyn-l1" class="plot"></div>
+          <div id="dyn-neg" class="plot"></div>
+          <div id="dyn-proj" class="plot"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. EMBEDDINGS (D3) -->
+    <section class="panel" data-step="embeddings">
+      <div class="panel-head">
+        <h2><span class="idx">05</span> Embeddings — routing across scale</h2>
+        <p>Top-4 focal-tubulin pairwise coherences as the environment grows from a
+           single tubulin to a three-tubulin segment (Fig. 8).</p>
+      </div>
+      <div class="panel-body"><div id="embed-grid" class="embed-grid"></div></div>
+    </section>
+
+    <!-- 6. BACKFLOW (D3) -->
+    <section class="panel" data-step="backflow">
+      <div class="panel-head">
+        <h2><span class="idx">06</span> Non-Markovian backflow</h2>
+        <p>Trace-distance D<sub>k</sub>(t) between two preparations of a two-tubulin
+           subsystem. Rising intervals (shaded) are information flowing back from
+           the surrounding tubulins (Fig. 9).</p>
+      </div>
+      <div class="panel-body"><div id="backflow-plot" class="plot"></div></div>
+    </section>
+
+    <!-- 7. LIFETIMES (D3) -->
+    <section class="panel" data-step="lifetimes">
+      <div class="panel-head">
+        <h2><span class="idx">07</span> Lifetime scaling &amp; disorder</h2>
+        <p>Super/subradiant radiative lifetimes vs assembly size. Ordered lattices
+           reach the millisecond range; disorder collapses the contrast (Fig. 12).</p>
+      </div>
+      <div class="panel-body"><div id="lifetime-plot" class="plot"></div></div>
+    </section>
+  </main>
+
+  <footer class="footer mono">
+    <span id="foot-status">loading data…</span>
+    <span>Gassab · Pusuluk · Craddock (2026) · reconstructed with QuTiP 5 · single-excitation + ground model</span>
+  </footer>
+
+  <div id="tooltip" class="tooltip mono" role="status"></div>
+
+  <script src="vendor/d3.v7.min.js"></script>
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/OrbitControls.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
