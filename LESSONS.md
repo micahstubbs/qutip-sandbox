@@ -126,3 +126,54 @@ Beads issue `external_ref`.
 as soon as a required input is unavailable. Do not wait until the end of the
 implementation, because missing datasets, seeds, and solver choices affect both
 tests and user-facing claims.
+
+## 2026-07-11T00:00 - "Garbage output" that looks like a concurrent-agent race was a return-tuple misread
+
+**Problem**: `net.eigenmodes()` appeared to return garbage decay rates
+(Γ/γ = 25230, -23445, ...) in some runs and correct ones (0.108..2.04) in
+others, with the source file unchanged (mtime frozen). I spent a long time
+convinced a concurrent Claude session was flipping model.py between an
+excitonic version and a `np.linalg.eig(H_eff)` version many times per second.
+
+**Root Cause**: `eigenmodes()` returns `(energies, decay, evecs)`. The excitonic
+*energies* are the eigenvalues of Δ, which in the near field are ±10^4·γ — the
+exact same magnitude/sign pattern as the "non-normal H_eff garbage" I expected.
+My debug scripts unpacked `d, _, _ = net.eigenmodes()`, so `d` was **energies,
+not decay**. Different scripts unpacked differently (`_, decay, _` vs `d,_,_`),
+producing "inconsistent" results that mimicked a live file race. The tell that
+disproved the race: `git diff` was empty and mtime never advanced, yet output
+"changed" — impossible for a file edit, so the variance had to be in *my* code.
+
+**Lesson**: Before attributing non-reproducible results to concurrency or the
+environment, confirm you are reading the right return value. A multi-value
+return whose elements have overlapping magnitude ranges (here energies and
+decay both dimensionless multiples of γ) is a trap. When "the file didn't change
+but the output did," suspect your own unpacking/closure before the filesystem.
+
+**Prevention**: For functions returning several arrays, name them at the call
+site (`energies, decay, evecs = ...`) rather than positional `x,_,_`, and add a
+one-line assertion on physical bounds (`assert decay.min() >= 0`) right where
+the value is consumed — it would have caught the energies-as-decay swap instantly.
+
+## 2026-07-11T00:00 - Viz data-fabrication: a summary scalar reconstructed into fake per-item bars
+
+**Problem**: The embeddings view drew four bars per cell at heights
+`max_pair_l1 * (1 - i*0.18)` — a synthetic linear ramp keyed only to rank index.
+Only the first bar (the true max) was real; the other three were invented and
+presented as measured per-pair coherences.
+
+**Root Cause**: The upstream script collapsed the per-pair time series to a
+single scalar (`max_pair_l1`) plus the pair IDs, discarding the actual per-pair
+values. The UI then "reconstructed" a plausible-looking distribution from that
+one number to fill the bars.
+
+**Lesson**: If a visualization shows per-item magnitudes, the dataset must
+contain per-item values. A single aggregate + a rank-index formula is
+fabrication, however plausible it looks. The fix is upstream: export the real
+series, not a scalar. Cross-check every view by diffing *what the exporter
+writes* against *what the view reads* — a view that renders more structure than
+the data contains is manufacturing it.
+
+**Prevention**: In review, for each chart ask "where does each plotted value
+come from in the JSON?" and trace it to a stored number. Any value computed from
+an index (`i`), a constant ramp, or `Math.random` in a "data" view is a red flag.
