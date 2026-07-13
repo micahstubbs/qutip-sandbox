@@ -30,7 +30,7 @@
     '  <button class="fb-close" aria-label="Close feedback">×</button>' +
     '  <h3>Questions or feedback?</h3>' +
     '  <p class="fb-sub">Anything unclear, technically off, or explained at the wrong ' +
-    "level? Tell me what would help — the current view is noted automatically.</p>" +
+    "abstraction level? Tell me what would help — the current view is noted automatically.</p>" +
     '  <form class="fb-form">' +
     '    <label class="fb-field"><span>Your message</span>' +
     '      <textarea name="message" rows="5" maxlength="4000" required ' +
