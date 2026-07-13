@@ -33,6 +33,55 @@
   <nav class="stepbar" id="stepbar" aria-label="Implementation steps"></nav>
 
   <main class="stage">
+    <!-- 0. INTRODUCTION -->
+    <section class="panel" data-step="intro">
+      <div class="panel-head">
+        <h2><span class="idx">01</span> Introduction — what you're about to explore</h2>
+        <p>A from-scratch, interactive reconstruction of a quantum-biology paper.
+           No physics background needed — start here.</p>
+      </div>
+      <div class="panel-body intro-body">
+        <div class="intro-hero">
+          <div class="intro-lead">
+            <p class="intro-eyebrow mono">Microtubule tryptophan networks · arXiv:2602.02868v1 · interactive reconstruction</p>
+            <h3>How does a flicker of light travel — and linger — inside a cell's skeleton?</h3>
+            <p>Microtubules are hollow protein tubes that give cells their shape and act
+               as internal railways. They're studded with <b>tryptophan</b>, an amino acid
+               that absorbs ultraviolet light and behaves like a tiny antenna. Packed close
+               together, these antennas couple into a shared quantum network.</p>
+            <p>This site rebuilds a 2026 paper that asks: when one antenna lights up, how
+               does that excitation — and the quantum correlations it carries —
+               <em>flow, get shared, and leak away?</em> Everything here is computed live
+               from a from-scratch simulation, not pre-rendered.</p>
+          </div>
+          <div id="intro-concept" class="intro-concept" aria-label="Animated concept: an excitation splitting into a fast bright channel and a slow dark channel"></div>
+        </div>
+
+        <div class="intro-cards">
+          <div class="intro-card"><span class="ic-k">The players</span>
+            <p>Eight tryptophans per tubulin building block — each a light-driven dipole
+               with a fixed position and orientation.</p></div>
+          <div class="intro-card is-bright"><span class="ic-k">Bright channels</span>
+            <p>Some collective modes radiate <b>super-fast</b> (superradiant): they broadcast
+               the energy outward almost at once.</p></div>
+          <div class="intro-card is-dark"><span class="ic-k">Dark channels</span>
+            <p>Others are nearly <b>dark</b> (subradiant): they trap the excitation and hold
+               its correlations far longer.</p></div>
+        </div>
+
+        <h3 class="intro-h">The seven views ahead</h3>
+        <p class="intro-sub">Each tab is a live step of the reconstruction — drag, scrub,
+           hover. Click a card to jump in.</p>
+        <div id="intro-steps" class="intro-steps"></div>
+
+        <div class="intro-foot">
+          <button class="intro-start" data-go="geometry">Start with the geometry →</button>
+          <p class="intro-note">Spot something unclear, off, or explained at the wrong level?
+             Use the <b>Feedback</b> button (bottom-right) on any view.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- 1. GEOMETRY (Three.js) -->
     <section class="panel" data-step="geometry">
       <div class="panel-head">

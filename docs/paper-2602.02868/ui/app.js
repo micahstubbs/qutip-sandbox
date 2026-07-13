@@ -2,6 +2,7 @@
    D3 for 2D data views, Three.js for the 3D geometry. Driven by data.json. */
 
 const STEPS = [
+  ["intro", "Introduction"],
   ["geometry", "Geometry"],
   ["couplings", "Couplings"],
   ["spectrum", "Spectrum"],
@@ -10,6 +11,16 @@ const STEPS = [
   ["backflow", "Backflow"],
   ["lifetimes", "Lifetimes"],
 ];
+// one-line teaser per downstream view (used by the intro's "what you'll explore")
+const STEP_BLURB = {
+  geometry: "The eight tryptophan sites of a tubulin dimer in 3D, with their transition dipoles.",
+  couplings: "How strongly each pair talks (Δ) and radiates together (G), as heatmaps.",
+  spectrum: "The collective modes, split into bright and dark by how fast they emit.",
+  dynamics: "Play the excitation evolving — populations, coherence, entanglement — for five starting states.",
+  embeddings: "How correlations reroute as one tubulin is embedded in ever-larger structures.",
+  backflow: "Evidence of memory: information flowing back from the surrounding tubulins.",
+  lifetimes: "How bright/dark lifetimes scale with size — and how disorder erases the gap.",
+};
 const SITE_COLORS = d3.schemeSet2;
 const BRIGHT = "#ff9e3d", DARK = "#35d0e6", INKDIM = "#8b95a6";
 const tip = document.getElementById("tooltip");
@@ -34,7 +45,8 @@ d3.json("data.json").then((data) => {
     `<span data-k="Γ_max">${data.meta.bright_max}γ</span>` +
     `<span data-k="Γ_min">${data.meta.dark_min}γ</span>`;
   buildStepbar();
-  activate("geometry");
+  syncPanelNumbers();
+  activate("intro");
 }).catch((e) => {
   document.getElementById("foot-status").textContent = "failed to load data.json — serve via http-server";
   console.error(e);
@@ -44,8 +56,17 @@ function buildStepbar() {
   const bar = d3.select("#stepbar");
   STEPS.forEach(([id, label], i) => {
     bar.append("button").attr("class", "step-btn").attr("data-step", id)
-      .html(`<span class="n">0${i + 1}</span>${label}`)
+      .html(`<span class="n">${pad(i + 1)}</span>${label}`)
       .on("click", () => activate(id));
+  });
+}
+function pad(n) { return (n < 10 ? "0" : "") + n; }
+// Keep each panel head's number in sync with the STEPS order (so inserting a
+// step renumbers everything without hand-editing the HTML).
+function syncPanelNumbers() {
+  STEPS.forEach(([id], i) => {
+    const idx = document.querySelector(`.panel[data-step="${id}"] .panel-head .idx`);
+    if (idx) idx.textContent = pad(i + 1);
   });
 }
 
@@ -461,7 +482,72 @@ function buildLifetimes() {
   });
 }
 
+/* ============================================================
+   00 · INTRODUCTION (explore cards + animated concept)
+   ============================================================ */
+function buildIntro() {
+  // "what you'll explore" cards, built from STEPS (skip the intro itself)
+  const grid = d3.select("#intro-steps");
+  STEPS.slice(1).forEach(function (s, i) {
+    var id = s[0], label = s[1];
+    grid.append("button").attr("class", "intro-step").attr("data-go", id)
+      .html(
+        '<span class="is-n mono">' + pad(i + 2) + "</span>" +
+        '<span class="is-name">' + label + "</span>" +
+        '<span class="is-desc">' + (STEP_BLURB[id] || "") + "</span>");
+  });
+  var jump = function () { activate(this.getAttribute("data-go")); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  grid.selectAll(".intro-step").on("click", jump);
+  d3.select(".intro-start").on("click", jump);
+
+  introConcept();
+}
+
+// A looping motif: an excitation delocalizes over a ring of sites, then splits
+// into a fast amber (bright/superradiant) burst and a slow cyan (dark/subradiant)
+// glow — the paper's core idea, at a glance.
+function introConcept() {
+  var host = d3.select("#intro-concept");
+  host.selectAll("*").remove();
+  var W = 460, H = 250, cx = 148, cy = 120, R = 72, N = 8;
+  var svg = host.append("svg").attr("viewBox", "0 0 " + W + " " + H).attr("width", "100%");
+  var waves = svg.append("g");
+  var brightW = waves.append("circle").attr("cx", cx).attr("cy", cy).attr("fill", "none")
+    .attr("stroke", BRIGHT).attr("stroke-width", 2.5);
+  var darkW = waves.append("circle").attr("cx", cx).attr("cy", cy).attr("fill", "none")
+    .attr("stroke", DARK).attr("stroke-width", 2.5);
+  var pos = d3.range(N).map(function (i) {
+    var a = -Math.PI / 2 + i * 2 * Math.PI / N;
+    return [cx + R * Math.cos(a), cy + R * Math.sin(a)];
+  });
+  var dots = svg.selectAll("circle.nd").data(pos).join("circle").attr("class", "nd")
+    .attr("cx", function (d) { return d[0]; }).attr("cy", function (d) { return d[1]; })
+    .attr("r", 7).attr("fill", "#1b2430").attr("stroke", "#2b3442");
+  // labels
+  var lg = svg.append("g").attr("font-family", "var(--mono)").attr("font-size", 11);
+  lg.append("text").attr("x", 292).attr("y", 78).attr("fill", BRIGHT).text("bright · fast export");
+  lg.append("text").attr("x", 292).attr("y", 95).attr("fill", INKDIM).attr("font-size", 9).text("superradiant · emits fast");
+  lg.append("text").attr("x", 292).attr("y", 150).attr("fill", DARK).text("dark · slow retention");
+  lg.append("text").attr("x", 292).attr("y", 167).attr("fill", INKDIM).attr("font-size", 9).text("subradiant · holds longer");
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var mix = d3.interpolateRgb("#1b2430", "#f0e9db");
+  var period = 5200, ease = d3.easeCubicOut;
+  function render(t) { // t in 0..1
+    var glow = Math.max(0, Math.sin(t * Math.PI));
+    dots.attr("fill", mix(0.12 + 0.72 * glow)).attr("r", 7 + 3 * glow)
+      .style("filter", glow > 0.2 ? "drop-shadow(0 0 " + (7 * glow) + "px #ffd9a0)" : null);
+    var bt = Math.max(0, Math.min(1, (t - 0.18) / 0.34));
+    brightW.attr("r", R + 8 + 78 * ease(bt)).attr("opacity", bt > 0 && bt < 1 ? 0.55 * (1 - bt) : 0);
+    var dt = Math.max(0, Math.min(1, (t - 0.18) / 0.82));
+    darkW.attr("r", R + 4 + 30 * ease(dt)).attr("opacity", dt > 0 ? 0.4 * (1 - 0.65 * dt) : 0);
+  }
+  if (reduce) { render(0.5); return; }
+  d3.timer(function (elapsed) { render((elapsed % period) / period); });
+}
+
 const BUILDERS = {
+  intro: buildIntro,
   geometry: buildGeometry, couplings: buildCouplings, spectrum: buildSpectrum,
   dynamics: buildDynamics, embeddings: buildEmbeddings, backflow: buildBackflow,
   lifetimes: buildLifetimes,
