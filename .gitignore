@@ -6,3 +6,10 @@ __pycache__/
 .claude/settings.local.json
 qutip-tutorials/
 output/notebook-runs/
+
+# Feedback widget: real endpoint config (see feedback.config.example.js)
+docs/paper-2602.02868/ui/feedback.config.js
+
+# wrangler local cache/state
+.wrangler/
+node_modules/

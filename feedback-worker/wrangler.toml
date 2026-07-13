@@ -1,0 +1,20 @@
+name = "qutip-feedback"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+
+# Non-secret config (safe to commit). Fork this and change to your own values.
+[vars]
+FEEDBACK_TO = "hi@micah.fyi"
+FEEDBACK_FROM = "QuTiP Feedback <feedback@micahstubbs.ai>"
+SITE_NAME = "QuTiP microtubule QIF"
+ALLOWED_ORIGINS = "https://qutip.micahstubbs.ai,https://micahstubbs.github.io,https://qutip-sandbox.pages.dev,http://localhost:8770,http://localhost:8771"
+
+# KV queue of submissions. Create with:  wrangler kv namespace create FEEDBACK
+# then paste the returned id here.
+[[kv_namespaces]]
+binding = "FEEDBACK"
+id = "1b6bd80412014d7ea58c4e608bcf9dab"
+
+# Secret (NOT in this file) — set once with:
+#   wrangler secret put RESEND_API_KEY
+# The account id is read from the CLOUDFLARE_ACCOUNT_ID env var at deploy time.
