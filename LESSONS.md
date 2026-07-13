@@ -177,3 +177,92 @@ the data contains is manufacturing it.
 **Prevention**: In review, for each chart ask "where does each plotted value
 come from in the JSON?" and trace it to a stored number. Any value computed from
 an index (`i`), a constant ramp, or `Math.random` in a "data" view is a red flag.
+
+## 2026-07-13T15:27 - Custom-domain static hosting: GitHub Pages beats Cloudflare Pages when DNS is external
+
+**Problem**: Attaching `qutip.micahstubbs.ai` (DNS on Spaceship) to a Cloudflare
+Pages project stuck in `status: pending` / `verification: error` flapping for
+15+ min; the site 404'd even though a valid Let's Encrypt cert was being served.
+
+**Root Cause**: Cloudflare Pages custom-domain activation is only reliable when
+the domain's DNS **zone is on Cloudflare**. With external DNS (a CNAME to
+`<proj>.pages.dev`), the activation/verification is flaky. A valid cert served +
+a 404 body means TLS works but the domain→project routing hasn't activated —
+that's a routing problem, not an SSL problem.
+
+**Lesson**: For a static site on a custom subdomain whose DNS lives at another
+registrar, **use GitHub Pages** (CNAME → `<user>.github.io`, cert provisions in
+seconds and is reliable) rather than Cloudflare Pages. Reserve Cloudflare Pages
+for domains whose zone you've moved onto Cloudflare.
+
+**Prevention**: Don't reach for Cloudflare Pages custom domains unless the zone
+is already on Cloudflare. Distinguish "SSL broken" (handshake fails / cipher
+mismatch) from "routing broken" (valid cert, 404) before debugging.
+
+## 2026-07-13T15:27 - DNS churn between two TLS providers shows users "SSL cipher mismatch"
+
+**Problem**: After repointing the domain GitHub→Cloudflare→GitHub, the user's
+browser showed "unsupported protocol / SSL version or cipher mismatch" while my
+curl got 200.
+
+**Root Cause**: Stale resolver caches (notably Quad9, holding the old TTL-3600
+CNAME) still pointed some clients at the provider that **no longer had the domain
+configured**, so that edge rejected the TLS SNI → cipher mismatch. Not a cert
+problem — a split-brain DNS state during propagation.
+
+**Lesson**: Never churn a live domain between two TLS-terminating hosts. If you
+must switch, **lower the CNAME TTL first** (e.g. 300s), switch once, and don't
+flip back. The transient cipher-mismatch self-heals as caches expire; verify with
+`dig CNAME @1.1.1.1 @8.8.8.8 @9.9.9.9` across resolvers, not just one.
+
+## 2026-07-13T15:27 - rsync --delete deploy silently drops branch-only files (CNAME, .nojekyll)
+
+**Problem**: Redeploying the UI via a `deploy-gh-pages` worktree that
+`rsync -a --delete`s the source folder to the branch root removed the `CNAME`
+file, breaking the custom domain, because `CNAME` lives on the gh-pages branch,
+not in the source `ui/` folder.
+
+**Lesson**: When a deploy syncs a source dir to a branch root with `--delete`,
+files that exist only on the branch (`CNAME`, `.nojekyll`) get wiped. The deploy
+script must **read and re-write an existing CNAME** each run (or always pass the
+domain). Fixed `deploy-gh-pages.sh` to preserve a prior CNAME.
+
+**Prevention**: After any gh-pages redeploy, confirm `git show origin/gh-pages:CNAME`.
+
+## 2026-07-13T15:27 - Serverless can't run local tools; use a durable queue + local drainer
+
+**Problem**: Needed a web feedback form to (a) email in real time and (b) create
+a **beads** issue. Beads lives in the git repo — a Cloudflare Worker can't run
+`br`, and putting a GitHub token in the Worker to create issues is a broad-scope
+secret exposure.
+
+**Lesson**: For "serverless event → local-tool action", the clean shape is:
+Worker does the real-time part (email via Resend **send-only** key) + writes to a
+**durable queue** (Cloudflare KV/D1); a **local script** drains the queue into the
+local tool (`br create`) idempotently. The only Worker secret is the send-only
+email key — no repo token in the function.
+
+**Also (KV gotchas)**: `wrangler kv key list` is eventually consistent (showed 0
+right after successful writes) — trust the Worker's write-path return value and
+the **direct CF API** list, not `wrangler` list. And the KV **binding attaches at
+`wrangler deploy`**, not at `wrangler secret put` (which created the Worker
+without the `wrangler.toml` bindings) — always `deploy` after editing bindings.
+
+## 2026-07-13T15:27 - Provider API field gotchas: Spaceship CNAME + Resend keys
+
+**Spaceship DNS**: deleting a CNAME needs the `cname` field in the JSON body, not
+`value` (else HTTP 422 "The Cname field is required"); and `set` won't overwrite
+an existing record — **delete then set**. Fixed `spaceship-dns.sh`'s delete.
+
+**Resend**: a restricted **send-only** API key returns 401 on `/domains` ("API
+key is restricted to only send emails") but sends fine — ideal least-privilege
+secret for a Worker. Enumerate verified sender domains with the **full** key's
+`GET https://api.resend.com/domains`; the "from" address must be on a verified
+domain.
+
+**Headless-Chrome fallback**: when the claude-in-chrome MCP extension is
+disconnected, verify a D3/SVG frontend with
+`"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new
+--disable-gpu --virtual-time-budget=4000 --screenshot=out.png --enable-logging=stderr URL`
+— renders SVG/D3 and surfaces page JS errors (WebGL/Three.js won't render
+headless without a GPU, but D3 views do).
