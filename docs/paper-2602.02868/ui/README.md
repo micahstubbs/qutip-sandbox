@@ -1,5 +1,7 @@
 # Interactive reconstruction — arXiv:2602.02868v1
 
+**Live:** https://qutip.micahstubbs.ai/ (also https://micahstubbs.github.io/qutip-sandbox/)
+
 A self-contained D3 + Three.js walkthrough of each step of the microtubule
 quantum-information-flow implementation. Seven interactive views:
 
