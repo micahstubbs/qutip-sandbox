@@ -1,15 +1,24 @@
 # Interactive reconstruction — arXiv:2602.02868v1
 
-**Live:** https://qutip.micahstubbs.ai/ — hosted on **Cloudflare Pages** (project
-`qutip-sandbox`, also at https://qutip-sandbox.pages.dev/). A secondary copy is on
-GitHub Pages at https://micahstubbs.github.io/qutip-sandbox/.
+**Live:** https://qutip.micahstubbs.ai/ — hosted on **GitHub Pages** (custom
+domain, HTTPS enforced; also at https://micahstubbs.github.io/qutip-sandbox/).
+A secondary copy is on Cloudflare Pages at https://qutip-sandbox.pages.dev/.
 
 Redeploy after changing the UI or regenerating `data.json`:
 
 ```bash
 .venv/bin/python scripts/export_viz_data.py   # if the model changed
-scripts/deploy_ui_cloudflare.sh               # -> qutip.micahstubbs.ai
+# primary — GitHub Pages on the custom domain (preserves CNAME):
+~/.claude/scripts/deploy-gh-pages.sh docs/paper-2602.02868/ui --domain qutip.micahstubbs.ai
+# secondary — Cloudflare Pages (pages.dev):
+scripts/deploy_ui_cloudflare.sh
 ```
+
+The site includes a **feedback widget** (button on every view). Its backend is a
+Cloudflare Worker in `../../../feedback-worker/`; queued feedback is imported to
+beads issues with `scripts/import_feedback.py`. See that worker's README. The
+live endpoint config (`feedback.config.js`) is gitignored — only
+`feedback.config.example.js` is committed, so forks work with no backend.
 
 A self-contained D3 + Three.js walkthrough of each step of the microtubule
 quantum-information-flow implementation. Seven interactive views:

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Deploy the interactive QIF UI to Cloudflare Pages (project: qutip-sandbox).
 #
-# The site is hosted directly at https://qutip.micahstubbs.ai/ (custom domain on
-# the Cloudflare Pages project) and https://qutip-sandbox.pages.dev/.
+# Deploys a SECONDARY copy to Cloudflare Pages at https://qutip-sandbox.pages.dev/.
+# The PRIMARY site (custom domain qutip.micahstubbs.ai) is on GitHub Pages.
 #
 # Reads the Cloudflare API token + account id from ~/keys/cloudflare/KEYS.md and
 # uploads docs/paper-2602.02868/ui/ via wrangler. Regenerate data.json first if
