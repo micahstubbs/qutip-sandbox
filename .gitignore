@@ -1,6 +1,8 @@
 .venv/
+.venv-*/
 __pycache__/
 *.pyc
 .env
+.claude/settings.local.json
 qutip-tutorials/
 output/notebook-runs/
