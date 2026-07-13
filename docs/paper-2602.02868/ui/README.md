@@ -1,6 +1,15 @@
 # Interactive reconstruction — arXiv:2602.02868v1
 
-**Live:** https://qutip.micahstubbs.ai/ (also https://micahstubbs.github.io/qutip-sandbox/)
+**Live:** https://qutip.micahstubbs.ai/ — hosted on **Cloudflare Pages** (project
+`qutip-sandbox`, also at https://qutip-sandbox.pages.dev/). A secondary copy is on
+GitHub Pages at https://micahstubbs.github.io/qutip-sandbox/.
+
+Redeploy after changing the UI or regenerating `data.json`:
+
+```bash
+.venv/bin/python scripts/export_viz_data.py   # if the model changed
+scripts/deploy_ui_cloudflare.sh               # -> qutip.micahstubbs.ai
+```
 
 A self-contained D3 + Three.js walkthrough of each step of the microtubule
 quantum-information-flow implementation. Seven interactive views:
