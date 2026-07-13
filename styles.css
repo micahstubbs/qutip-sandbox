@@ -153,3 +153,57 @@ body {
   .panel { animation: none; }
   * { transition-duration: 0.01ms !important; }
 }
+
+/* ---- Introduction view ---- */
+.intro-body { padding: 22px 24px 24px; }
+.intro-hero { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 26px; align-items: center; }
+.intro-eyebrow { color: var(--dark); font-size: 11px; letter-spacing: .04em; margin: 0 0 10px; }
+.intro-lead h3 { font-family: var(--display); font-weight: 700; font-size: 23px; line-height: 1.25;
+  margin: 0 0 14px; color: var(--ink); }
+.intro-lead p { color: #c3cad6; font-size: 13.5px; line-height: 1.6; margin: 0 0 11px; }
+.intro-lead b { color: var(--ink); }
+.intro-lead em { color: var(--bright); font-style: normal; }
+.intro-concept { border: 1px solid var(--line); border-radius: 5px; padding: 8px;
+  background: radial-gradient(circle at 30% 40%, #0d141c, #070a0e); min-height: 220px;
+  display: flex; align-items: center; }
+#intro-concept text { font-family: var(--mono); }
+
+.intro-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 26px 0 8px; }
+.intro-card { border: 1px solid var(--line-2); border-left-width: 3px; border-left-color: var(--line-2);
+  border-radius: 5px; padding: 14px 15px; background: #0c1017; }
+.intro-card.is-bright { border-left-color: var(--bright); }
+.intro-card.is-dark { border-left-color: var(--dark); }
+.intro-card .ic-k { display: block; font-size: 11px; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ink-dim); margin-bottom: 7px; }
+.intro-card.is-bright .ic-k { color: var(--bright); }
+.intro-card.is-dark .ic-k { color: var(--dark); }
+.intro-card p { margin: 0; font-size: 12.5px; line-height: 1.5; color: #c3cad6; }
+.intro-card b { color: var(--ink); }
+
+.intro-h { font-family: var(--display); font-weight: 700; font-size: 18px; margin: 28px 0 4px; color: var(--ink); }
+.intro-sub { color: var(--ink-dim); font-size: 12.5px; margin: 0 0 16px; }
+.intro-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.intro-step { text-align: left; cursor: pointer; font-family: var(--mono);
+  background: #0c1017; border: 1px solid var(--line-2); border-radius: 6px; padding: 13px 14px;
+  display: flex; flex-direction: column; gap: 5px; transition: transform .14s, border-color .14s, background .14s; }
+.intro-step:hover { transform: translateY(-3px); border-color: var(--dark); background: #0e141d; }
+.intro-step .is-n { color: var(--bright); font-size: 12px; }
+.intro-step .is-name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); }
+.intro-step .is-desc { font-size: 11.5px; line-height: 1.45; color: var(--ink-dim); }
+
+.intro-foot { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 26px;
+  padding-top: 18px; border-top: 1px solid var(--line); }
+.intro-start { font-family: var(--mono); font-size: 13px; cursor: pointer; color: var(--bg);
+  background: var(--bright); border: 1px solid var(--bright); border-radius: 999px; padding: 11px 22px;
+  box-shadow: 0 6px 22px rgba(255,107,26,.3); transition: transform .15s; }
+.intro-start:hover { transform: translateY(-2px); }
+.intro-note { margin: 0; color: var(--ink-dim); font-size: 12px; }
+.intro-note b { color: var(--bright); }
+
+@media (max-width: 900px) {
+  .intro-hero, .intro-cards { grid-template-columns: 1fr; }
+  .intro-steps { grid-template-columns: repeat(2, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-step, .intro-start { transition: none; }
+}
